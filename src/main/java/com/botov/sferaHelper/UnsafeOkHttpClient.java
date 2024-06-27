@@ -42,7 +42,11 @@ public class UnsafeOkHttpClient {
                 }
             });
 
-            OkHttpClient okHttpClient = builder.build();
+            OkHttpClient okHttpClient = builder
+                    .addInterceptor(
+                            new AuthInterceptor()
+                    )
+                    .build();
             return okHttpClient;
         } catch (Exception e) {
             throw new RuntimeException(e);

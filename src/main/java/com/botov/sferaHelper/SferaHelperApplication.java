@@ -13,17 +13,17 @@ import java.lang.reflect.Type;
 class SferaHelperApplication {
 		public static void main(String... args) throws IOException {
 
+			var client = UnsafeOkHttpClient.getUnsafeOkHttpClient();
 			Retrofit retrofit = new Retrofit.Builder()
 					.baseUrl("https://sfera.inno.local/")
 					.addConverterFactory(GsonConverterFactory.create())
-					.client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
+					.client(client)
 					.build();
 
 			SferaService sferaService = retrofit.create(SferaService.class);
 			var a = sferaService.listTicketsByQuery("area='RDS'");
-			//var a = sferaService.listTicketsByQuery();
-			Response<String> b = a.execute();
-			System.out.println("test1");
+			var b = a.execute();
+			System.out.println("b=" + b);
 		}
 
 }
