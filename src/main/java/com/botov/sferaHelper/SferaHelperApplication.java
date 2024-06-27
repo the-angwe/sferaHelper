@@ -16,6 +16,7 @@ class SferaHelperApplication {
 			Retrofit retrofit = new Retrofit.Builder()
 					.baseUrl("https://sfera.inno.local/")
 					.addConverterFactory(GsonConverterFactory.create())
+					.client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
 					.build();
 
 			SferaService sferaService = retrofit.create(SferaService.class);
