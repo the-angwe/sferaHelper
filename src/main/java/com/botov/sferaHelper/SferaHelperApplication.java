@@ -27,15 +27,17 @@ class SferaHelperApplication {
 			String query = "area=\"FRNRSA\" and " +
 					"status not in ('closed', 'done', 'rejectedByThePerformer') " +
 					"and estimation = null";
-			var response = sferaService.listTicketsByQuery(query).execute();
+			var response = sferaService.listTicketsByQuery(query, 100).execute();
 			System.out.println("response=" + response);
 			System.out.println("response.body()=" + response.body());
 
 			for (TicketDto ticket: response.body().getContent()) {
 				EstimationDto estimation = new EstimationDto();
 				estimation.setEstimation(3600L);
+				System.out.println("set estimation for " + ticket.getNumber());
 				sferaService.setTicketEstimation(ticket.getNumber(), estimation).execute();
 			}
+			System.out.println("end");
 		}
 
 }
