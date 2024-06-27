@@ -1,5 +1,7 @@
 package com.botov.sferaHelper;
 
+import com.botov.sferaHelper.dto.EstimationDto;
+import com.botov.sferaHelper.dto.TicketDto;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Response;
@@ -28,6 +30,12 @@ class SferaHelperApplication {
 			var response = sferaService.listTicketsByQuery(query).execute();
 			System.out.println("response=" + response);
 			System.out.println("response.body()=" + response.body());
+
+			for (TicketDto ticket: response.body().getContent()) {
+				EstimationDto estimation = new EstimationDto();
+				estimation.setEstimation(3600L);
+				sferaService.setTicketEstimation(ticket.getNumber(), estimation).execute();
+			}
 		}
 
 }

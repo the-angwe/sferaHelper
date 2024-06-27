@@ -6,5 +6,7 @@ import java.util.List;
 
 @Data
 public class ListTicketsDto {
+
+    private Long totalElements;
     private List<TicketDto> content;
 }
