@@ -21,9 +21,13 @@ class SferaHelperApplication {
 					.build();
 
 			SferaService sferaService = retrofit.create(SferaService.class);
-			var a = sferaService.listTicketsByQuery("area='RDS'");
-			var b = a.execute();
-			System.out.println("b=" + b);
+			//String query = "area='RDS'";
+			String query = "area=\"FRNRSA\" and " +
+					"status not in ('closed', 'done', 'rejectedByThePerformer') " +
+					"and estimation = null";
+			var response = sferaService.listTicketsByQuery(query).execute();
+			System.out.println("response=" + response);
+			System.out.println("response.body()=" + response.body());
 		}
 
 }
