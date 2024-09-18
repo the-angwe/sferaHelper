@@ -1,4 +1,4 @@
-package com.botov.sferaHelper;
+package com.botov.sferaHelper.service;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
