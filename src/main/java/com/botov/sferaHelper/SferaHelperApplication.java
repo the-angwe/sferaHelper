@@ -12,23 +12,30 @@ class SferaHelperApplication {
 		public static void main(String... args) throws IOException {
 			//String query = "area='RDS'";
 			//String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and systems = \"1672 Аутентификация ФЛ РБ\" and parent = null";
-			String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and estimation = null";
+			String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer')";
 			ListTicketsDto listTicketsDto = listTicketsByQuery(query);
 
 			for (TicketDto ticket: listTicketsDto.getContent()) {
 				//setSystem(ticket, "\"1672_3 Аутентификация подтверждение операций\"");
 				//setParent(ticket, "STROMS-2723");
-				setEstimation(ticket, 3600L);
+				//setEstimation(ticket, 3600L);
+				setDueDate(ticket, "2024-12-28");
 			}
 			System.out.println("end");
 		}
 
 	private static ListTicketsDto listTicketsByQuery(String query) throws IOException {
-		var response = SferaService.INSTANCE.listTicketsByQuery(query, 100).execute();
+		var response = SferaService.INSTANCE.listTicketsByQuery(query, 1000).execute();
 		System.out.println("response=" + response);
 		System.out.println("response.body()=" + response.body());
 
 		return response.body();
+	}
+
+	private static void setDueDate(TicketDto ticket, String dueDate) throws IOException {
+		TicketDto ticketDto = new TicketDto();
+		ticketDto.setDueDate(dueDate);
+		patchTicket(ticket.getNumber(), ticketDto);
 	}
 
 	private static void setEstimation(TicketDto ticket, long estimation) throws IOException {

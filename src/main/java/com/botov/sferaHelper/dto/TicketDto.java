@@ -11,4 +11,5 @@ public class TicketDto {
     private Long estimation;//in seconds
     private String parent;//like STROMS-1000
     private Set<String> systems;//like STROMS-1000
+    private String dueDate;//like "2024-12-28"
 }
