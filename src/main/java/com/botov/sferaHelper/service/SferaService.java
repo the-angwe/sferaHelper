@@ -1,7 +1,8 @@
 package com.botov.sferaHelper.service;
 
+import com.botov.sferaHelper.dto.GetTicketDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
-import com.botov.sferaHelper.dto.TicketDto;
+import com.botov.sferaHelper.dto.PatchTicketDto;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,6 +27,9 @@ public interface SferaService {
     Call<ListTicketsDto> listTicketsByQuery(@Query("query") String query, @Query("size") int size);
 
     @PATCH("app/tasks/api/v0.1/entities/{number}")
-    Call<Void> patchTicket(@Path("number") String number, @Body TicketDto estimation);
+    Call<Void> patchTicket(@Path("number") String number, @Body PatchTicketDto estimation);
+
+    @GET("app/tasks/api/v1/entity-views/{number}")
+    Call<GetTicketDto> getTicket(@Path("number") String number);
 
 }

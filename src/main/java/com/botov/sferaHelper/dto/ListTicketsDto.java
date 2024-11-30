@@ -8,5 +8,5 @@ import java.util.List;
 public class ListTicketsDto {
 
     private Long totalElements;
-    private List<TicketDto> content;
+    private List<ListTicketShortDto> content;
 }
