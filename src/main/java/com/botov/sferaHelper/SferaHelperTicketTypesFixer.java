@@ -58,7 +58,7 @@ public class SferaHelperTicketTypesFixer {
             );
         }
 
-        TreeMap<Long, TicketType> diffs = new TreeMap<>();
+/*        TreeMap<Long, TicketType> diffs = new TreeMap<>();
         TreeMap<TicketType, Long> diffs2 = new TreeMap<>();
         for (TicketType ticketType : TicketType.values()) {
             Long italon = italonTicketTypesMap.get(ticketType);
@@ -66,7 +66,7 @@ public class SferaHelperTicketTypesFixer {
             long diff = italon - curr;
             diffs.put(diff, ticketType);
             diffs2.put(ticketType, diff);
-        }
+        }*/
 
 
         for (TicketType ticketType : TicketType.values()) {
