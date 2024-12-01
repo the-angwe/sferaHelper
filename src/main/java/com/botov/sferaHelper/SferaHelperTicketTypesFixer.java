@@ -57,8 +57,7 @@ public class SferaHelperTicketTypesFixer {
                     for (GetTicketDto ticket : fullTicketsMap.get(ticketType)) {
                         long estimation = multiplyEstimation(ticket.getEstimation(), estimationRate);
                         ticket.setEstimation(estimation);
-                        //TODO restore it
-                        //SferaHelperMethods.setEstimation(ticket.getNumber(), estimation);
+                        SferaHelperMethods.setEstimation(ticket.getNumber(), estimation);
                     }
                 }
             }
