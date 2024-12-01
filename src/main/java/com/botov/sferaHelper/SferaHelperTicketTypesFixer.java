@@ -72,7 +72,7 @@ public class SferaHelperTicketTypesFixer {
             long italon = calcItalonEstimation(ticketType, fullEstimation);
             if (italon == 0) {
                 //TODO get it from italonTicketTypesMap
-                TicketType newTicketType = TicketType.NEW_FUNC;
+                TicketType newTicketType = maximumItalonTicketType();
                 Iterator<GetTicketDto> donorTickets = fullTicketsMap.get(ticketType).iterator();
                 while (donorTickets.hasNext()) {
                     GetTicketDto donorTicket = donorTickets.next();
@@ -125,6 +125,18 @@ public class SferaHelperTicketTypesFixer {
         }
 
         System.out.println("fullTicketsMap = " + fullTicketsMap);
+    }
+
+    private static TicketType maximumItalonTicketType() {
+        TicketType result = null;
+        long max = 0l;
+        for (Map.Entry<TicketType, Long> entry : italonTicketTypesMap.entrySet()) {
+            long value = entry.getValue().longValue();
+            if (value > max) {
+                result = entry.getKey();
+            }
+        }
+        return result;
     }
 
     private static void changeType(GetTicketDto donorTicket, HashMap<TicketType, List<GetTicketDto>> fullTicketsMap, TicketType ticketType) {
