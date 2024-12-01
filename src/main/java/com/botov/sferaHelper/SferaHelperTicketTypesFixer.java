@@ -29,20 +29,12 @@ public class SferaHelperTicketTypesFixer {
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         HashMap<TicketType, Set<GetTicketDto>> fullTicketsMap = new HashMap<>();
-        HashMap<TicketType, Long> currentTicketTypesMap = new HashMap<>();
-        for (TicketType ticketType : TicketType.values()) {
-            currentTicketTypesMap.put(ticketType, 0l);
-        }
 
-        long fullEstimation = 0l;
         for (ListTicketShortDto listTicketShortDto: listTicketsDto.getContent()) {
             GetTicketDto ticket = SferaHelperMethods.ticketByNumber(listTicketShortDto.getNumber());
 
-            long estimation = ensureEstimation(ticket);
-
-            fullEstimation += estimation;
+            ensureEstimation(ticket);
             TicketType ticketType = TicketType.getTicketType(ticket);
-            currentTicketTypesMap.put(ticketType, currentTicketTypesMap.get(ticketType) + estimation);
 
             Set<GetTicketDto> fullTicketsMapSet = fullTicketsMap.get(ticketType);
             if (fullTicketsMapSet == null) {
@@ -52,16 +44,12 @@ public class SferaHelperTicketTypesFixer {
             fullTicketsMapSet.add(ticket);
         }
 
-        for (TicketType ticketType : TicketType.values()) {
-            italonTicketTypesMap.put(ticketType,
-                    Integer.valueOf(Math.round((italonTicketTypesMap.getOrDefault(ticketType, 0L)*fullEstimation)/100L)).longValue()
-            );
-        }
+        long fullEstimation = calcFullEstimation(fullTicketsMap);
 
         for (TicketType ticketType : TicketType.values()) {
             if (!ticketType.isCanChange()) {
-                Long italon = italonTicketTypesMap.get(ticketType);
-                Long curr = currentTicketTypesMap.get(ticketType);
+                Long italon = calcItalonEstimation(ticketType, fullEstimation);
+                Long curr = calcEstimation(ticketType, fullTicketsMap);
                 long diff = italon - curr;
                 if (!match(diff, fullEstimation)) {
                     double estimationRate = ((double) italon) / curr;
@@ -74,8 +62,28 @@ public class SferaHelperTicketTypesFixer {
             }
         }
 
+        System.out.println("fullTicketsMap = " + fullTicketsMap);
+    }
 
-        System.out.println("currentTicketTypesMap = " + currentTicketTypesMap);
+    private static Long calcItalonEstimation(TicketType ticketType, long fullEstimation) {
+        return Integer.valueOf(Math.round((italonTicketTypesMap.getOrDefault(ticketType, 0L)*fullEstimation)/100L)).longValue();
+    }
+
+    private static long calcFullEstimation(HashMap<TicketType, Set<GetTicketDto>> fullTicketsMap) {
+        long result = 0l;
+        for (TicketType ticketType : fullTicketsMap.keySet()) {
+            result += calcEstimation(ticketType, fullTicketsMap);
+        }
+        return result;
+    }
+
+    private static long calcEstimation(TicketType ticketType, HashMap<TicketType, Set<GetTicketDto>> fullTicketsMap) {
+        long result = 0l;
+        Set<GetTicketDto> tickets = fullTicketsMap.get(ticketType);
+        for (GetTicketDto ticket : tickets) {
+            result += ticket.getEstimation();
+        }
+        return result;
     }
 
     private static long ensureEstimation(GetTicketDto ticket) throws IOException {
@@ -86,7 +94,6 @@ public class SferaHelperTicketTypesFixer {
         return ticket.getEstimation();
     }
 
-    //TODO check it
     private static long multiplyEstimation(Long estimation, double estimationRate) {
         long multiplyResult = Math.round((estimation == null ? 1 : estimation)  * estimationRate);
         long result = 0;
