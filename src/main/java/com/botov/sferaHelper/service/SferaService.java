@@ -29,6 +29,9 @@ public interface SferaService {
     @PATCH("app/tasks/api/v0.1/entities/{number}")
     Call<Void> patchTicket(@Path("number") String number, @Body PatchTicketDto estimation);
 
+    @PATCH("app/tasks/api/v1/entities/{number}")
+    Call<Void> patchTicket2(@Path("number") String number, @Body PatchTicketDto estimation);
+
     @GET("app/tasks/api/v1/entity-views/{number}")
     Call<GetTicketDto> getTicket(@Path("number") String number);
 

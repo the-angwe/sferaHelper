@@ -56,6 +56,11 @@ public class SferaHelperMethods {
 
     public static void setTicketType(String number, TicketType ticketType) throws IOException {
         PatchTicketDto ticketDto = ticketType.getPatchTicketDto();
-        patchTicket(number, ticketDto);
+        patchTicket2(number, ticketDto);
+    }
+
+    private static void patchTicket2(String number, PatchTicketDto ticketDto) throws IOException {
+        System.out.println("patch2 " + number + " with " + ticketDto);
+        SferaService.INSTANCE.patchTicket2(number, ticketDto).execute();
     }
 }

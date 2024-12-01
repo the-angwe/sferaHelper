@@ -25,6 +25,15 @@ public class SferaHelperTicketTypesFixer {
     public static final long MIN_ESTIMATION_STEP = 60*60;// 1 hour
 
     public static void main(String... args) throws IOException {
+/*        GetTicketDto t = SferaHelperMethods.ticketByNumber("FRNRSA-5167");
+        TicketType tt = TicketType.getTicketType(t);
+        SferaHelperMethods.setTicketType(t.getNumber(), TicketType.NEW_FUNC);
+        SferaHelperMethods.setTicketType(t.getNumber(), TicketType.TECH_DEBT);
+        SferaHelperMethods.setTicketType(t.getNumber(), TicketType.ARH);
+        if (true) {
+            throw new RuntimeException();
+        }*/
+
         String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and sprint = '4263'";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
@@ -105,6 +114,9 @@ public class SferaHelperTicketTypesFixer {
                 Iterator<GetTicketDto> it = donorTickets.iterator();
                 while (it.hasNext() && diff > MIN_ESTIMATION_STEP) {
                     GetTicketDto donorTicket = it.next();
+                    if (!donorTicketType.isCanChange(donorTicket)) {
+                        continue;
+                    }
                     if (donorTicket.getEstimation() > diff) {
                         continue;
                     }

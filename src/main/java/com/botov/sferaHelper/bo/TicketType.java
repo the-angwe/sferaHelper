@@ -59,7 +59,26 @@ public enum TicketType {
         return canChange;
     }
 
+    public boolean isCanChange(GetTicketDto ticket) {
+        if (!isCanChange()) {
+            return false;
+        }
+
+        if (ticket != null
+                && ticket.getWorkGroup() != null
+                && ticket.getWorkGroup().getName() != null
+                && ticket.getWorkGroup().getName().equals("Технический долг")
+                && ticket.getTechDebtConsequence() != null
+                && ticket.getTechDebtConsequence().getName() != null
+                && ticket.getTechDebtConsequence().getName().equals("ИБ")) {
+            return false;
+        }
+        return true;
+    }
+
     public PatchTicketDto getPatchTicketDto() {
         return patchTicketDtoSupplier.get();
     }
+
+
 }

@@ -11,5 +11,6 @@ public class GetTicketDto {
     private Long estimation;//in seconds
     private String dueDate;//like "2024-12-28"
     private WorkGroupDto workGroup;
+    private TechDebtConsequenceDto techDebtConsequence;
     private TypeDto type;
 }
