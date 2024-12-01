@@ -1,18 +1,42 @@
 package com.botov.sferaHelper.bo;
 
 import com.botov.sferaHelper.dto.GetTicketDto;
+import com.botov.sferaHelper.dto.PatchTicketDto;
+
+import java.util.Collections;
+import java.util.function.Supplier;
 
 public enum TicketType {
-    TECH_DEBT(true),
-    ARH(true),
-    NEW_FUNC(true),
-    DEFECT(false),
-    OTHER(true);
+    TECH_DEBT(true, () -> {
+        PatchTicketDto ticketDto = new PatchTicketDto();
+        ticketDto.setWorkGroup("Технический долг");
+        ticketDto.setTechDebtConsequence("Другое");
+        return ticketDto;
+    }),
+    ARH(true, () -> {
+        PatchTicketDto ticketDto = new PatchTicketDto();
+        ticketDto.setWorkGroup("Архитектурная задача");
+        ticketDto.setArchTaskReason("Прочие архитектурные задачи");
+        return ticketDto;
+    }),
+    NEW_FUNC(true, () -> {
+        PatchTicketDto ticketDto = new PatchTicketDto();
+        ticketDto.setWorkGroup("Новая функциональность");
+        return ticketDto;
+    }),
+    DEFECT(false, () -> {
+        throw new RuntimeException("DEFECT is not for patch");
+    }),
+    OTHER(true, () -> {
+        throw new RuntimeException("OTHER is not for patch");
+    });
 
     private final boolean canChange;//TODO тех.долг ИБ не может меняться
+    private final Supplier<PatchTicketDto> patchTicketDtoSupplier;
 
-    TicketType(boolean canChange) {
+    TicketType(boolean canChange, Supplier<PatchTicketDto> patchTicketDtoSupplier) {
         this.canChange = canChange;
+        this.patchTicketDtoSupplier = patchTicketDtoSupplier;
     }
 
     public static TicketType getTicketType(GetTicketDto ticket) {
@@ -35,4 +59,7 @@ public enum TicketType {
         return canChange;
     }
 
+    public PatchTicketDto getPatchTicketDto() {
+        return patchTicketDtoSupplier.get();
+    }
 }

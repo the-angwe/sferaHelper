@@ -1,5 +1,6 @@
 package com.botov.sferaHelper.service;
 
+import com.botov.sferaHelper.bo.TicketType;
 import com.botov.sferaHelper.dto.GetTicketDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.PatchTicketDto;
@@ -53,4 +54,8 @@ public class SferaHelperMethods {
         SferaService.INSTANCE.patchTicket(number, ticketDto).execute();
     }
 
+    public static void setTicketType(String number, TicketType ticketType) throws IOException {
+        PatchTicketDto ticketDto = ticketType.getPatchTicketDto();
+        patchTicket(number, ticketDto);
+    }
 }

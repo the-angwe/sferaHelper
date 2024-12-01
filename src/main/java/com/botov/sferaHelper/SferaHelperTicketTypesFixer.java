@@ -138,9 +138,9 @@ public class SferaHelperTicketTypesFixer {
         return result;
     }
 
-    private static void changeType(GetTicketDto donorTicket, HashMap<TicketType, List<GetTicketDto>> fullTicketsMap, TicketType ticketType) {
+    private static void changeType(GetTicketDto donorTicket, HashMap<TicketType, List<GetTicketDto>> fullTicketsMap, TicketType ticketType) throws IOException {
         fullTicketsMap.get(ticketType).add(donorTicket);
-        //TODO REST API CALL
+        SferaHelperMethods.setTicketType(donorTicket.getNumber(), ticketType);
     }
 
     private static long calcItalonEstimation(TicketType ticketType, long fullEstimation) {

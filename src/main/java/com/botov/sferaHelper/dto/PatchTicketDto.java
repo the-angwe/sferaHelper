@@ -14,4 +14,5 @@ public class PatchTicketDto {
     private String dueDate;//like "2024-12-28"
     private String techDebtConsequence; //like "Другое"
     private String workGroup; //like "Технический долг"
+    private String archTaskReason; //like "Прочие архитектурные задачи"
 }
