@@ -14,11 +14,9 @@ public class SferaHelperTicketTypesFixer {
     private static final HashMap<TicketType, Long> italonTicketTypesMap = new HashMap<>();
     public static final int MAX_ERROR_IN_PERCENT = 5;
 
-    //TODO
-    public static final int MAX_ESTIMATION = 5*8*60*60;// 1 week
+    public static final long MAX_ESTIMATION = 5*8*60*60;// 1 week
 
-    //TODO
-    public static final int MIN_ESTIMATION_STEP = 60*60;// 1 hour
+    public static final long MIN_ESTIMATION_STEP = 60*60;// 1 hour
 
     {
         italonTicketTypesMap.put(TicketType.NEW_FUNC, 40l);
@@ -40,7 +38,9 @@ public class SferaHelperTicketTypesFixer {
         long fullEstimation = 0l;
         for (ListTicketShortDto listTicketShortDto: listTicketsDto.getContent()) {
             GetTicketDto ticket = SferaHelperMethods.ticketByNumber(listTicketShortDto.getNumber());
-            long estimation = ticket.getEstimation() == null ? 0 : ticket.getEstimation();
+
+            long estimation = ensureEstimation(ticket);
+
             fullEstimation += estimation;
             TicketType ticketType = TicketType.getTicketType(ticket);
             currentTicketTypesMap.put(ticketType, currentTicketTypesMap.get(ticketType) + estimation);
@@ -86,9 +86,16 @@ public class SferaHelperTicketTypesFixer {
         System.out.println("currentTicketTypesMap = " + currentTicketTypesMap);
     }
 
+    private static long ensureEstimation(GetTicketDto ticket) throws IOException {
+        if (ticket.getEstimation() == null) {
+            ticket.setEstimation(MIN_ESTIMATION_STEP);
+            SferaHelperMethods.setEstimation(ticket.getNumber(), MIN_ESTIMATION_STEP);
+        }
+        return ticket.getEstimation();
+    }
+
     //TODO check it
     private static long multiplyEstimation(Long estimation, double estimationRate) {
-        //TODO why 1?
         long multiplyResult = Math.round((estimation == null ? 1 : estimation)  * estimationRate);
         long result = 0;
         while (result<multiplyResult) {
