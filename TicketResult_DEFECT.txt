@@ -1,0 +1,341 @@
+{
+    "number": "FRNRSA-6403",
+    "area": {
+        "identifier": "FRNRSA",
+        "name": "Подтверждение операций и интеграция с СПМ",
+        "viewText": "FRNRSA",
+        "viewColor": "Special/Static Dark Violet",
+        "viewVariant": "tag",
+        "templateCode": "team"
+    },
+    "parent": {
+        "identifier": "STROMS-3198",
+        "name": "[1553] Исполнение архитектурных требований и требований безопасности в \"Заявках ФЛ\" в Q1 25",
+        "iconUrl": "/api/v0.1/dictionaries/icons/task-epic",
+        "viewText": "[1553] Исполнение архитектурных требований и требований безопасности в \"Заявках ФЛ\" в Q1 25",
+        "viewVariant": "icon",
+        "number": "STROMS-3198",
+        "name": "[1553] Исполнение архитектурных требований и требований безопасности в \"Заявках ФЛ\" в Q1 25",
+        "type": {
+            "identifier": "epic",
+            "name": "Эпик",
+            "iconUrl": "/api/v0.1/dictionaries/icons/task-epic",
+            "viewText": "Эпик",
+            "viewColor": "Special/Static Orange",
+            "viewVariant": "icon",
+            "parentTypes": [],
+            "childrenTypes": [
+                {
+                    "identifier": "feature",
+                    "name": "Фича",
+                    "iconUrl": "/api/v0.1/dictionaries/icons/task-feature",
+                    "viewText": "Фича",
+                    "viewColor": "Special/Static Violet",
+                    "viewVariant": "icon"
+                },
+                {
+                    "identifier": "story",
+                    "name": "История",
+                    "iconUrl": "/api/v0.1/dictionaries/icons/task-story",
+                    "viewText": "История",
+                    "viewColor": "Special/Static Green",
+                    "viewVariant": "icon"
+                },
+                {
+                    "identifier": "task",
+                    "name": "Задача",
+                    "iconUrl": "/api/v0.1/dictionaries/icons/task-task",
+                    "viewText": "Задача",
+                    "viewColor": "Special/Static Cyan",
+                    "viewVariant": "icon"
+                },
+                {
+                    "identifier": "defect",
+                    "name": "Дефект",
+                    "iconUrl": "/api/v0.1/dictionaries/icons/task-bug",
+                    "viewText": "Дефект",
+                    "viewColor": "Special/Static Red",
+                    "viewVariant": "icon"
+                },
+                {
+                    "identifier": "taskRun",
+                    "name": "Task RUN",
+                    "iconUrl": "/api/v0.1/dictionaries/icons/task-task",
+                    "viewText": "Task RUN",
+                    "viewColor": "Special/Static Cyan",
+                    "viewVariant": "icon"
+                },
+                {
+                    "identifier": "task3L",
+                    "name": "Задача 3 линии",
+                    "iconUrl": "/api/v0.1/dictionaries/icons/task-task",
+                    "viewText": "Задача 3 линии",
+                    "viewColor": "Special/Static Cyan",
+                    "viewVariant": "icon"
+                },
+                {
+                    "identifier": "storyBFKO",
+                    "name": "История БФКО",
+                    "iconUrl": "/api/v0.1/dictionaries/icons/task-story",
+                    "viewText": "История БФКО",
+                    "viewColor": "Special/Static Green",
+                    "viewVariant": "icon"
+                }
+            ]
+        },
+        "priority": {
+            "identifier": "average",
+            "name": "Средний",
+            "iconUrl": "/api/v0.1/dictionaries/icons/priority-medium",
+            "viewText": "Средний",
+            "viewColor": "Attention/Attention 60",
+            "viewVariant": "icon"
+        },
+        "status": {
+            "identifier": "created",
+            "name": "Создано",
+            "viewText": "Создано",
+            "viewColor": "Neutral/Neutral 40",
+            "viewVariant": "badge",
+            "categoryCode": "new",
+            "categoryName": "Открыта"
+        }
+    },
+    "type": {
+        "identifier": "defect",
+        "name": "Дефект",
+        "iconUrl": "/api/v0.1/dictionaries/icons/task-bug",
+        "viewText": "Дефект",
+        "viewColor": "Special/Static Red",
+        "viewVariant": "icon",
+        "parentTypes": [
+            {
+                "identifier": "epic",
+                "name": "Эпик",
+                "iconUrl": "/api/v0.1/dictionaries/icons/task-epic",
+                "viewText": "Эпик",
+                "viewColor": "Special/Static Orange",
+                "viewVariant": "icon"
+            },
+            {
+                "identifier": "feature",
+                "name": "Фича",
+                "iconUrl": "/api/v0.1/dictionaries/icons/task-feature",
+                "viewText": "Фича",
+                "viewColor": "Special/Static Violet",
+                "viewVariant": "icon"
+            }
+        ],
+        "childrenTypes": [
+            {
+                "identifier": "subtask",
+                "name": "Подзадача",
+                "iconUrl": "/api/v0.1/dictionaries/icons/task-subtask",
+                "viewText": "Подзадача",
+                "viewColor": "Special/Static Turquoise",
+                "viewVariant": "icon"
+            }
+        ]
+    },
+    "status": {
+        "identifier": "created",
+        "name": "Создано",
+        "viewText": "Создано",
+        "viewColor": "Neutral/Neutral 40",
+        "viewVariant": "badge",
+        "categoryCode": "new",
+        "categoryName": "Открыта"
+    },
+    "state": "Normal",
+    "priority": {
+        "identifier": "average",
+        "name": "Средний",
+        "iconUrl": "/api/v0.1/dictionaries/icons/priority-medium",
+        "viewText": "Средний",
+        "viewColor": "Attention/Attention 60",
+        "viewVariant": "icon"
+    },
+    "name": "Дефект-контейнер",
+    "description": "<p>Дефект-контейнер</p>",
+    "createDate": "2024-11-19T12:45:20Z",
+    "createdBy": {
+        "identifier": "vtb70251005@corp.dev.vtb",
+        "name": "Романов Юрий Витальевич",
+        "viewText": "РЮ",
+        "viewColor": "Special/Static Light Green",
+        "viewVariant": "avatar"
+    },
+    "updateDate": "2024-12-01T10:50:58Z",
+    "updatedBy": {
+        "identifier": "vtb70166052@corp.dev.vtb",
+        "name": "Ботов Дмитрий Михайлович",
+        "viewText": "БД",
+        "viewColor": "Special/Static Lime",
+        "viewVariant": "avatar"
+    },
+    "assignee": {
+        "identifier": "vtb4100642@corp.dev.vtb",
+        "name": "Романов Илья Олегович",
+        "viewText": "РИ",
+        "viewColor": "Special/Static Light Magenta",
+        "viewVariant": "avatar"
+    },
+    "owner": {
+        "identifier": "vtb4067243@corp.dev.vtb",
+        "name": "Афанасьев Сергей Андреевич",
+        "viewText": "АС",
+        "viewColor": "Special/Static Light Magenta",
+        "viewVariant": "avatar"
+    },
+    "dueDate": "2025-03-31",
+    "estimation": 57600,
+    "remainder": 57600,
+    "rank": "0|qjm62u:",
+    "children": [],
+    "relations": [
+        {
+            "identifier": "8083405",
+            "name": "Склонирована",
+            "viewColor": "Primary/Primary 20",
+            "type": "isClonedBy",
+            "relatedEntity": {
+                "identifier": "FRNRSA-6330",
+                "name": "Дефект-контейнер",
+                "iconUrl": "/api/v0.1/dictionaries/icons/task-bug",
+                "viewText": "Дефект-контейнер",
+                "viewVariant": "icon",
+                "number": "FRNRSA-6330",
+                "name": "Дефект-контейнер",
+                "type": {
+                    "identifier": "defect",
+                    "name": "Дефект",
+                    "iconUrl": "/api/v0.1/dictionaries/icons/task-bug",
+                    "viewText": "Дефект",
+                    "viewColor": "Special/Static Red",
+                    "viewVariant": "icon",
+                    "parentTypes": [
+                        {
+                            "identifier": "epic",
+                            "name": "Эпик",
+                            "iconUrl": "/api/v0.1/dictionaries/icons/task-epic",
+                            "viewText": "Эпик",
+                            "viewColor": "Special/Static Orange",
+                            "viewVariant": "icon"
+                        },
+                        {
+                            "identifier": "feature",
+                            "name": "Фича",
+                            "iconUrl": "/api/v0.1/dictionaries/icons/task-feature",
+                            "viewText": "Фича",
+                            "viewColor": "Special/Static Violet",
+                            "viewVariant": "icon"
+                        }
+                    ],
+                    "childrenTypes": [
+                        {
+                            "identifier": "subtask",
+                            "name": "Подзадача",
+                            "iconUrl": "/api/v0.1/dictionaries/icons/task-subtask",
+                            "viewText": "Подзадача",
+                            "viewColor": "Special/Static Turquoise",
+                            "viewVariant": "icon"
+                        }
+                    ]
+                },
+                "priority": {
+                    "identifier": "average",
+                    "name": "Средний",
+                    "iconUrl": "/api/v0.1/dictionaries/icons/priority-medium",
+                    "viewText": "Средний",
+                    "viewColor": "Attention/Attention 60",
+                    "viewVariant": "icon"
+                },
+                "status": {
+                    "identifier": "closed",
+                    "name": "Закрыто",
+                    "viewText": "Закрыто",
+                    "viewColor": "Success/Success 40",
+                    "viewVariant": "badge",
+                    "categoryCode": "final",
+                    "categoryName": "Решена"
+                }
+            }
+        }
+    ],
+    "detectionPhase": {
+        "identifier": "ИТ",
+        "name": "ИТ",
+        "viewText": "ИТ",
+        "viewVariant": "avatar"
+    },
+    "detectionEnvironment": {
+        "identifier": "ИФТ",
+        "name": "ИФТ",
+        "viewText": "ИФТ",
+        "viewVariant": "avatar"
+    },
+    "actualSprint": {
+        "id": 4262,
+        "type": "sprint",
+        "name": "Спринт 2024.4.5.NPP Shared Sprint",
+        "status": "active",
+        "statusCategoryCode": "in_progress",
+        "startDate": "2024-11-20T19:00:00Z",
+        "endDate": "2024-12-03T19:00:00Z"
+    },
+    "path": [
+        {
+            "number": "FRNRSA-6403",
+            "parent": "STROMS-3198",
+            "type": "defect",
+            "status": "created",
+            "priority": "average",
+            "name": "Дефект-контейнер"
+        },
+        {
+            "number": "STROMS-3198",
+            "type": "epic",
+            "status": "created",
+            "priority": "average",
+            "name": "[1553] Исполнение архитектурных требований и требований безопасности в \"Заявках ФЛ\" в Q1 25"
+        }
+    ],
+    "externalLinks": [],
+    "id": "5690728",
+    "affectedReleases": [],
+    "history": [],
+    "systemsCode": [
+        "1553"
+    ],
+    "detectedInSystem": [
+        {
+            "identifier": "1553 Заявки ФЛ",
+            "name": "1553 Заявки ФЛ",
+            "viewText": "1553 Заявки ФЛ",
+            "viewVariant": "avatar"
+        }
+    ],
+    "checklists": [],
+    "attachments": [],
+    "defectProdOrNotProd": {
+        "identifier": "до ПРОМ",
+        "name": "до ПРОМ",
+        "viewText": "до ПРОМ",
+        "viewVariant": "avatar"
+    },
+    "systems": [
+        {
+            "identifier": "1553 Заявки ФЛ",
+            "name": "1553 Заявки ФЛ",
+            "viewText": "1553 Заявки ФЛ",
+            "viewVariant": "avatar"
+        }
+    ],
+    "comments": [],
+    "label": [],
+    "component": [],
+    "closedSprints": [],
+    "detectedInSystemCode": [
+        "1553"
+    ]
+}

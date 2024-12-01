@@ -9,15 +9,26 @@ public enum TicketType {
     DEFECT(false),
     OTHER(true);
 
-    private final boolean canChange;
+    private final boolean canChange;//TODO тех.долг ИБ не может меняться
 
-    private TicketType(boolean canChange) {
+    TicketType(boolean canChange) {
         this.canChange = canChange;
     }
 
     public static TicketType getTicketType(GetTicketDto ticket) {
-        //TODO
-        return null;
+        if (ticket.getType().getName().equals("Дефект")) {
+            return DEFECT;
+        }
+        if (ticket.getWorkGroup().getName().equals("Новая функциональность")) {
+            return NEW_FUNC;
+        }
+        if (ticket.getWorkGroup().getName().equals("Технический долг")) {
+            return TECH_DEBT;
+        }
+        if (ticket.getWorkGroup().getName().equals("Архитектурная задача")) {
+            return ARH;
+        }
+        return OTHER;
     }
 
     public boolean isCanChange() {

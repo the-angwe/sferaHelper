@@ -10,5 +10,6 @@ public class GetTicketDto {
     private String number;//like FRNRSA-5000
     private Long estimation;//in seconds
     private String dueDate;//like "2024-12-28"
-
+    private WorkGroupDto workGroup;
+    private TypeDto type;
 }
