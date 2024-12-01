@@ -58,17 +58,6 @@ public class SferaHelperTicketTypesFixer {
             );
         }
 
-/*        TreeMap<Long, TicketType> diffs = new TreeMap<>();
-        TreeMap<TicketType, Long> diffs2 = new TreeMap<>();
-        for (TicketType ticketType : TicketType.values()) {
-            Long italon = italonTicketTypesMap.get(ticketType);
-            Long curr = currentTicketTypesMap.get(ticketType);
-            long diff = italon - curr;
-            diffs.put(diff, ticketType);
-            diffs2.put(ticketType, diff);
-        }*/
-
-
         for (TicketType ticketType : TicketType.values()) {
             if (!ticketType.isCanChange()) {
                 Long italon = italonTicketTypesMap.get(ticketType);
@@ -77,11 +66,11 @@ public class SferaHelperTicketTypesFixer {
                 if (!match(diff, fullEstimation)) {
                     double estimationRate = ((double) italon) / curr;
                     for (GetTicketDto ticket : fullTicketsMap.get(ticketType)) {
-                        SferaHelperMethods.setEstimation(ticket.getNumber(), multiplyEstimation(ticket.getEstimation(), estimationRate));
+                        long estimation = multiplyEstimation(ticket.getEstimation(), estimationRate);
+                        ticket.setEstimation(estimation);
+                        SferaHelperMethods.setEstimation(ticket.getNumber(), estimation);
                     }
                 }
-            } else {
-
             }
         }
 
