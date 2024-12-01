@@ -46,7 +46,8 @@ public class SferaHelperTicketTypesFixer {
 
         long fullEstimation = calcFullEstimation(fullTicketsMap);
 
-/*        for (TicketType ticketType : TicketType.values()) {
+        //fix bugs estimations
+        for (TicketType ticketType : TicketType.values()) {
             if (!ticketType.isCanChange()) {
                 Long italon = calcItalonEstimation(ticketType, fullEstimation);
                 Long curr = calcEstimation(ticketType, fullTicketsMap);
@@ -56,36 +57,62 @@ public class SferaHelperTicketTypesFixer {
                     for (GetTicketDto ticket : fullTicketsMap.get(ticketType)) {
                         long estimation = multiplyEstimation(ticket.getEstimation(), estimationRate);
                         ticket.setEstimation(estimation);
-                        SferaHelperMethods.setEstimation(ticket.getNumber(), estimation);
+                        //TODO restore it
+                        //SferaHelperMethods.setEstimation(ticket.getNumber(), estimation);
                     }
                 }
             }
-        }*/
+        }
+
+        //remove zero italons
+        for (TicketType ticketType : TicketType.values()) {
+            if (!ticketType.isCanChange()) {
+                continue;
+            }
+            long italon = calcItalonEstimation(ticketType, fullEstimation);
+            if (italon == 0) {
+                //TODO get it from italonTicketTypesMap
+                TicketType newTicketType = TicketType.NEW_FUNC;
+                Iterator<GetTicketDto> donorTickets = fullTicketsMap.get(ticketType).iterator();
+                while (donorTickets.hasNext()) {
+                    GetTicketDto donorTicket = donorTickets.next();
+                    changeType(donorTicket, fullTicketsMap, newTicketType);
+                    donorTickets.remove();
+                }
+            }
+        }
 
         //refresh after last step
         fullEstimation = calcFullEstimation(fullTicketsMap);
 
         for (TicketType ticketType : TicketType.values()) {
-            if (ticketType.isCanChange()) {
-                Long italon = calcItalonEstimation(ticketType, fullEstimation);
-                Long curr = calcEstimation(ticketType, fullTicketsMap);
-                long diff = italon - curr;
-                if (!match(diff, fullEstimation)) {
-                    for (TicketType donorTicketType : TicketType.values()) {
-                        if (donorTicketType.isCanChange() && donorTicketType!=ticketType) {
-                            List<GetTicketDto> donorTickets = fullTicketsMap.get(donorTicketType);
-                            Collections.sort(donorTickets, (o1, o2) -> o2.getEstimation().compareTo(o1.getEstimation()));
-                            Iterator<GetTicketDto> it = donorTickets.iterator();
-                            while (it.hasNext() && diff > MIN_ESTIMATION_STEP) {
-                                GetTicketDto donorTicket = it.next();
-                                if (donorTicket.getEstimation() < diff) {
-                                    diff -= donorTicket.getEstimation();
-                                    changeType(donorTicket, fullTicketsMap, ticketType);
-                                    it.remove();
-                                }
-                            }
-                        }
+            if (!ticketType.isCanChange()) {
+                continue;
+            }
+            long italon = calcItalonEstimation(ticketType, fullEstimation);
+            if (italon==0) {
+                continue;
+            }
+            Long curr = calcEstimation(ticketType, fullTicketsMap);
+            long diff = italon - curr;
+            if (match(diff, fullEstimation)) {
+                continue;
+            }
+            for (TicketType donorTicketType : TicketType.values()) {
+                if (!donorTicketType.isCanChange() || donorTicketType==ticketType) {
+                    continue;
+                }
+                List<GetTicketDto> donorTickets = fullTicketsMap.get(donorTicketType);
+                Collections.sort(donorTickets, (o1, o2) -> o2.getEstimation().compareTo(o1.getEstimation()));
+                Iterator<GetTicketDto> it = donorTickets.iterator();
+                while (it.hasNext() && diff > MIN_ESTIMATION_STEP) {
+                    GetTicketDto donorTicket = it.next();
+                    if (donorTicket.getEstimation() > diff) {
+                        continue;
                     }
+                    diff -= donorTicket.getEstimation();
+                    changeType(donorTicket, fullTicketsMap, ticketType);
+                    it.remove();
                 }
             }
         }
@@ -105,7 +132,7 @@ public class SferaHelperTicketTypesFixer {
         //TODO REST API CALL
     }
 
-    private static Long calcItalonEstimation(TicketType ticketType, long fullEstimation) {
+    private static long calcItalonEstimation(TicketType ticketType, long fullEstimation) {
         return Integer.valueOf(Math.round((italonTicketTypesMap.getOrDefault(ticketType, 0L)*fullEstimation)/100L)).longValue();
     }
 
