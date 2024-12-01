@@ -12,18 +12,17 @@ import java.util.*;
 public class SferaHelperTicketTypesFixer {
 
     private static final HashMap<TicketType, Long> italonTicketTypesMap = new HashMap<>();
-    public static final int MAX_ERROR_IN_PERCENT = 5;
-
-    public static final long MAX_ESTIMATION = 5*8*60*60;// 1 week
-
-    public static final long MIN_ESTIMATION_STEP = 60*60;// 1 hour
-
-    {
+    static {
         italonTicketTypesMap.put(TicketType.NEW_FUNC, 40l);
         italonTicketTypesMap.put(TicketType.TECH_DEBT, 30l);
         italonTicketTypesMap.put(TicketType.ARH, 20l);
         italonTicketTypesMap.put(TicketType.DEFECT, 10l);
     }
+    public static final int MAX_ERROR_IN_PERCENT = 1;
+
+    public static final long MAX_ESTIMATION = 5*8*60*60;// 1 week
+
+    public static final long MIN_ESTIMATION_STEP = 60*60;// 1 hour
 
     public static void main(String... args) throws IOException {
         String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and sprint = '4263'";
@@ -54,7 +53,9 @@ public class SferaHelperTicketTypesFixer {
         }
 
         for (TicketType ticketType : TicketType.values()) {
-            italonTicketTypesMap.put(ticketType, Integer.valueOf(Math.round((italonTicketTypesMap.get(ticketType)*fullEstimation)/100L)).longValue());
+            italonTicketTypesMap.put(ticketType,
+                    Integer.valueOf(Math.round((italonTicketTypesMap.getOrDefault(ticketType, 0L)*fullEstimation)/100L)).longValue()
+            );
         }
 
         TreeMap<Long, TicketType> diffs = new TreeMap<>();
@@ -70,7 +71,9 @@ public class SferaHelperTicketTypesFixer {
 
         for (TicketType ticketType : TicketType.values()) {
             if (!ticketType.isCanChange()) {
-                Long diff = diffs2.get(ticketType);
+                Long italon = italonTicketTypesMap.get(ticketType);
+                Long curr = currentTicketTypesMap.get(ticketType);
+                long diff = italon - curr;
                 if (!match(diff, fullEstimation)) {
                     double estimationRate = ((double) diff) / fullEstimation;
                     for (GetTicketDto ticket : fullTicketsMap.get(ticketType)) {
@@ -105,7 +108,7 @@ public class SferaHelperTicketTypesFixer {
     }
 
     private static boolean match(Long diff, Long fullEstimation) {
-        return (diff / fullEstimation) * 100 < MAX_ERROR_IN_PERCENT;
+        return ((double) Math.abs(diff) / fullEstimation) * 100 < MAX_ERROR_IN_PERCENT;
     }
 
 
