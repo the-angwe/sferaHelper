@@ -46,7 +46,7 @@ public class SferaHelperTicketTypesFixer {
 
             Set<GetTicketDto> fullTicketsMapSet = fullTicketsMap.get(ticketType);
             if (fullTicketsMapSet == null) {
-                fullTicketsMapSet = new HashSet<>();
+                fullTicketsMapSet = new TreeSet<>(Comparator.comparing(GetTicketDto::getEstimation));
                 fullTicketsMap.put(ticketType, fullTicketsMapSet);
             }
             fullTicketsMapSet.add(ticket);
@@ -75,7 +75,7 @@ public class SferaHelperTicketTypesFixer {
                 Long curr = currentTicketTypesMap.get(ticketType);
                 long diff = italon - curr;
                 if (!match(diff, fullEstimation)) {
-                    double estimationRate = ((double) diff) / fullEstimation;
+                    double estimationRate = ((double) italon) / curr;
                     for (GetTicketDto ticket : fullTicketsMap.get(ticketType)) {
                         SferaHelperMethods.setEstimation(ticket.getNumber(), multiplyEstimation(ticket.getEstimation(), estimationRate));
                     }
