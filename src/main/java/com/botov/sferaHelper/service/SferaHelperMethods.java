@@ -1,7 +1,6 @@
 package com.botov.sferaHelper.service;
 
 import com.botov.sferaHelper.dto.GetTicketDto;
-import com.botov.sferaHelper.dto.ListTicketShortDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.PatchTicketDto;
 
@@ -24,29 +23,29 @@ public class SferaHelperMethods {
         return response.body();
     }
 
-    public static void setDueDate(ListTicketShortDto ticket, String dueDate) throws IOException {
+    public static void setDueDate(String number, String dueDate) throws IOException {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setDueDate(dueDate);
-        patchTicket(ticket.getNumber(), ticketDto);
+        patchTicket(number, ticketDto);
     }
 
-    public static void setEstimation(ListTicketShortDto ticket, long estimation) throws IOException {
+    public static void setEstimation(String number, long estimation) throws IOException {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setEstimation(estimation);
-        patchTicket(ticket.getNumber(), ticketDto);
+        patchTicket(number, ticketDto);
     }
 
-    public static void setParent(ListTicketShortDto ticket, String parent) throws IOException {
+    public static void setParent(String number, String parent) throws IOException {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setParent(parent);
-        patchTicket(ticket.getNumber(), ticketDto);
+        patchTicket(number, ticketDto);
     }
 
     //TODO not working
-    public static void setSystem(ListTicketShortDto ticket, String system) throws IOException {
+    public static void setSystem(String number, String system) throws IOException {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setSystems(Collections.singleton(system));
-        patchTicket(ticket.getNumber(), ticketDto);
+        patchTicket(number, ticketDto);
     }
 
     public static void patchTicket(String number, PatchTicketDto ticketDto) throws IOException {

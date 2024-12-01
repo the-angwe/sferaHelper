@@ -9,6 +9,7 @@ import com.botov.sferaHelper.service.SferaHelperMethods;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class SferaHelperTicketTypesFixer {
 
@@ -19,7 +20,7 @@ public class SferaHelperTicketTypesFixer {
     public static final int MAX_ESTIMATION = 5*8*60*60;// 1 week
 
     //TODO
-    public static final int MIN_ESTIMATION = 60*60;// 1 hour
+    public static final int MIN_ESTIMATION_STEP = 60*60;// 1 hour
 
     {
         italonTicketTypesMap.put(TicketType.NEW_FUNC, 40l);
@@ -32,7 +33,7 @@ public class SferaHelperTicketTypesFixer {
         String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and sprint = '4263'";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
-        HashMap<String, GetTicketDto> fullTicketsMap = new HashMap<>();
+        HashMap<TicketType, TreeSet<GetTicketDto>> fullTicketsMap = new HashMap<>();
         HashMap<TicketType, Long> currentTicketTypesMap = new HashMap<>();
         for (TicketType ticketType : TicketType.values()) {
             currentTicketTypesMap.put(ticketType, 0l);
@@ -41,10 +42,12 @@ public class SferaHelperTicketTypesFixer {
         Long fullEstimation = 0l;
         for (ListTicketShortDto listTicketShortDto: listTicketsDto.getContent()) {
             GetTicketDto ticket = SferaHelperMethods.ticketByNumber(listTicketShortDto.getNumber());
-            fullTicketsMap.put(listTicketShortDto.getNumber(), ticket);
             fullEstimation += ticket.getEstimation();
             TicketType ticketType = TicketType.getTicketType(ticket);
             currentTicketTypesMap.put(ticketType, currentTicketTypesMap.get(ticketType) +  ticket.getEstimation());
+
+            TreeSet<GetTicketDto> fullTicketsMapSet = fullTicketsMap.getOrDefault(ticketType, new TreeSet<>());
+            fullTicketsMapSet.add(ticket);
         }
 
         for (TicketType ticketType : TicketType.values()) {
@@ -66,13 +69,28 @@ public class SferaHelperTicketTypesFixer {
             if (!ticketType.isCanChange()) {
                 Long diff = diffs2.get(ticketType);
                 if (!match(diff, fullEstimation)) {
-
+                    double estimationRate = ((double) diff) / fullEstimation;
+                    for (GetTicketDto ticket : fullTicketsMap.get(ticketType)) {
+                        SferaHelperMethods.setEstimation(ticket.getNumber(), multiplyEstimation(ticket.getEstimation(), estimationRate));
+                    }
                 }
+            } else {
+
             }
         }
 
 
         System.out.println("currentTicketTypesMap = " + currentTicketTypesMap);
+    }
+
+    //TODO check it
+    private static long multiplyEstimation(Long estimation, double estimationRate) {
+        long multiplyResult = Math.round(estimation * estimationRate);
+        long result = 0;
+        while (result<multiplyResult) {
+            result += MIN_ESTIMATION_STEP;
+        }
+        return Math.min(result, MAX_ESTIMATION);
     }
 
     private static boolean match(Long diff, Long fullEstimation) {

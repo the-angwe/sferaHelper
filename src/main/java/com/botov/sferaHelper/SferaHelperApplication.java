@@ -19,7 +19,7 @@ class SferaHelperApplication {
 			for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
 				//SferaHelperMethods.setSystem(ticket, "\"1672_3 Аутентификация подтверждение операций\"");
 				//SferaHelperMethods.setParent(ticket, "STROMS-3199");
-				SferaHelperMethods.setEstimation(ticket, 3600L);
+				SferaHelperMethods.setEstimation(ticket.getNumber(), 3600L);
 				//SferaHelperMethods.setDueDate(ticket, "2025-03-31");
 			}
 			System.out.println("end");
