@@ -72,6 +72,8 @@ public class SferaHelperTicketTypesFixer {
             }
         }
 
+        printFullTicketsMap(fullTicketsMap);
+
         //remove zero italons
         for (TicketType ticketType : TicketType.values()) {
             if (!ticketType.isCanChange()) {
@@ -126,15 +128,20 @@ public class SferaHelperTicketTypesFixer {
                 }
             }
         }
+        printFullTicketsMap(fullTicketsMap);
 
+    }
+
+    private static void printFullTicketsMap(HashMap<TicketType, List<GetTicketDto>> fullTicketsMap) {
+        System.out.println();
+
+        long fullEstimation = calcFullEstimation(fullTicketsMap);
         for (TicketType ticketType : TicketType.values()) {
             Long italon = calcItalonEstimation(ticketType, fullEstimation);
             Long curr = calcEstimation(ticketType, fullTicketsMap);
             long diff = italon - curr;
             System.out.println("For " + ticketType + ": italon=" + italon + "; curr=" + curr + "; diff=" + diff);
         }
-
-        System.out.println("fullTicketsMap = " + fullTicketsMap);
     }
 
     private static TicketType maximumItalonTicketType() {
