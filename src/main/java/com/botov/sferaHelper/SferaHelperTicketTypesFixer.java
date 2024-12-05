@@ -20,9 +20,14 @@ public class SferaHelperTicketTypesFixer {
     }
     public static final int MAX_ERROR_IN_PERCENT = 1;
 
-    public static final long MAX_ESTIMATION = 5*8*60*60;// 1 week
+    public static final long HOUR = 60*60;// 1 hour
+    public static final long DAY = HOUR*8;// 1 hour
+    public static final long WEEK = DAY*5;// 1 hour
 
-    public static final long MIN_ESTIMATION_STEP = 60*60;// 1 hour
+
+    public static final long MAX_ESTIMATION = WEEK;// 1 week
+
+    public static final long MIN_ESTIMATION_STEP = HOUR;// 1 hour
 
     public static void main(String... args) throws IOException {
 /*        GetTicketDto t = SferaHelperMethods.ticketByNumber("FRNRSA-5167");
@@ -38,6 +43,9 @@ public class SferaHelperTicketTypesFixer {
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         HashMap<TicketType, List<GetTicketDto>> fullTicketsMap = new HashMap<>();
+        for (TicketType ticketType : TicketType.values()) {
+            fullTicketsMap.put(ticketType, new ArrayList<>());
+        }
 
         for (ListTicketShortDto listTicketShortDto: listTicketsDto.getContent()) {
             GetTicketDto ticket = SferaHelperMethods.ticketByNumber(listTicketShortDto.getNumber());
@@ -46,10 +54,6 @@ public class SferaHelperTicketTypesFixer {
             TicketType ticketType = TicketType.getTicketType(ticket);
 
             List<GetTicketDto> fullTicketsMapSet = fullTicketsMap.get(ticketType);
-            if (fullTicketsMapSet == null) {
-                fullTicketsMapSet = new ArrayList<>();
-                fullTicketsMap.put(ticketType, fullTicketsMapSet);
-            }
             fullTicketsMapSet.add(ticket);
         }
 
@@ -136,12 +140,45 @@ public class SferaHelperTicketTypesFixer {
         System.out.println();
 
         long fullEstimation = calcFullEstimation(fullTicketsMap);
+        System.out.println("fullEstimation = " + formatEstimation(fullEstimation));
         for (TicketType ticketType : TicketType.values()) {
             Long italon = calcItalonEstimation(ticketType, fullEstimation);
             Long curr = calcEstimation(ticketType, fullTicketsMap);
             long diff = italon - curr;
-            System.out.println("For " + ticketType + ": italon=" + italon + "; curr=" + curr + "; diff=" + diff);
+            System.out.println("For " + ticketType
+                    + ": italon=" + formatEstimation(italon)
+                    + "; curr=" + formatEstimation(curr)
+                    + "; diff=" + formatEstimation(diff));
         }
+    }
+
+    private static String formatEstimation(long fullEstimation) {
+        String result = "";
+
+        long remain = fullEstimation;
+        long weeks = remain / WEEK;
+        if (weeks > 0) {
+            result += (weeks + "w ");
+            remain = remain % WEEK;
+        }
+
+        long days = remain / DAY;
+        if (days > 0) {
+            result += (days + "d ");
+            remain = remain % DAY;
+        }
+
+        long hours = remain / HOUR;
+        if (hours > 0) {
+            result += (hours + "h ");
+            remain = remain % HOUR;
+        }
+
+        if (remain > 0) {
+            result += (remain + "s ");
+        }
+
+        return result;
     }
 
     private static TicketType maximumItalonTicketType() {
@@ -176,8 +213,10 @@ public class SferaHelperTicketTypesFixer {
     private static long calcEstimation(TicketType ticketType, HashMap<TicketType, List<GetTicketDto>> fullTicketsMap) {
         long result = 0l;
         List<GetTicketDto> tickets = fullTicketsMap.get(ticketType);
-        for (GetTicketDto ticket : tickets) {
-            result += ticket.getEstimation();
+        if (tickets != null) {
+            for (GetTicketDto ticket : tickets) {
+                result += ticket.getEstimation();
+            }
         }
         return result;
     }
