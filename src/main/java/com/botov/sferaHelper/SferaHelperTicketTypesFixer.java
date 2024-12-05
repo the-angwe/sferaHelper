@@ -39,7 +39,7 @@ public class SferaHelperTicketTypesFixer {
             throw new RuntimeException();
         }*/
 
-        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and sprint = '4331'";
+        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and sprint = '4332'";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         HashMap<TicketType, List<GetTicketDto>> fullTicketsMap = new HashMap<>();
@@ -59,6 +59,7 @@ public class SferaHelperTicketTypesFixer {
 
         long fullEstimation = calcFullEstimation(fullTicketsMap);
 
+        Set<TicketType> processedTicketTypes = new HashSet<>();
         //fix bugs estimations
         for (TicketType ticketType : TicketType.values()) {
             if (!ticketType.isCanChange()) {
@@ -73,6 +74,7 @@ public class SferaHelperTicketTypesFixer {
                         SferaHelperMethods.setEstimation(ticket.getNumber(), estimation);
                     }
                 }
+                processedTicketTypes.add(ticketType);
             }
         }
 
@@ -92,6 +94,7 @@ public class SferaHelperTicketTypesFixer {
                     changeType(donorTicket, fullTicketsMap, newTicketType);
                     donorTickets.remove();
                 }
+                processedTicketTypes.add(ticketType);
             }
         }
 
@@ -112,7 +115,7 @@ public class SferaHelperTicketTypesFixer {
                 continue;
             }
             for (TicketType donorTicketType : TicketType.values()) {
-                if (!donorTicketType.isCanChange() || donorTicketType==ticketType) {
+                if (!donorTicketType.isCanChange() || donorTicketType==ticketType || processedTicketTypes.contains(donorTicketType)) {
                     continue;
                 }
                 List<GetTicketDto> donorTickets = fullTicketsMap.get(donorTicketType);
@@ -130,6 +133,9 @@ public class SferaHelperTicketTypesFixer {
                     changeType(donorTicket, fullTicketsMap, ticketType);
                     it.remove();
                 }
+            }
+            if (Math.abs(diff) < DAY) {
+                processedTicketTypes.add(ticketType);
             }
         }
         printFullTicketsMap(fullTicketsMap);
