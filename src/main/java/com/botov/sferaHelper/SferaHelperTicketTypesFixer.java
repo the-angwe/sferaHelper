@@ -39,7 +39,7 @@ public class SferaHelperTicketTypesFixer {
             throw new RuntimeException();
         }*/
 
-        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and sprint = '4263'";
+        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and sprint = '4331'";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         HashMap<TicketType, List<GetTicketDto>> fullTicketsMap = new HashMap<>();
@@ -152,10 +152,14 @@ public class SferaHelperTicketTypesFixer {
         }
     }
 
-    private static String formatEstimation(long fullEstimation) {
+    private static String formatEstimation(long estimation) {
         String result = "";
+        if (estimation < 0) {
+            result += "-";
+            estimation = Math.abs(estimation);
+        }
 
-        long remain = fullEstimation;
+        long remain = estimation;
         long weeks = remain / WEEK;
         if (weeks > 0) {
             result += (weeks + "w ");
