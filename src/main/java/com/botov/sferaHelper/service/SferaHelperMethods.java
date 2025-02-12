@@ -63,4 +63,10 @@ public class SferaHelperMethods {
         System.out.println("patch2 " + number + " with " + ticketDto);
         SferaService.INSTANCE.patchTicket2(number, ticketDto).execute();
     }
+
+    public static void setProject(String number, String project) throws IOException {
+        PatchTicketDto ticketDto = new PatchTicketDto();
+        ticketDto.setProjectConsumer(Collections.singleton(project));
+        patchTicket2(number, ticketDto);
+    }
 }
