@@ -42,11 +42,10 @@ public class SferaHelperMethods {
         patchTicket(number, ticketDto);
     }
 
-    //TODO not working
     public static void setSystem(String number, String system) throws IOException {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setSystems(Collections.singleton(system));
-        patchTicket(number, ticketDto);
+        patchTicket2(number, ticketDto);
     }
 
     public static void patchTicket(String number, PatchTicketDto ticketDto) throws IOException {

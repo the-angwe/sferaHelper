@@ -13,7 +13,9 @@ class SferaHelperApplication {
 			//String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and parent=null";
 			//String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and systems = \"1553 Заявки ФЛ\"";
 			//String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and systems = \"1672_3 Аутентификация подтверждение операций\"";
-			String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer')";
+			//String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer')";
+			String query = "area=\"FRNRSA\" and updateDate > '2024-12-31'";
+			//String query = "area=\"FRNRSA\" and number='FRNRSA-7105'";
 			ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
 			for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
@@ -21,7 +23,9 @@ class SferaHelperApplication {
 				//SferaHelperMethods.setParent(ticket, "STROMS-3199");
 				//SferaHelperMethods.setEstimation(ticket.getNumber(), 3600L);
 				//SferaHelperMethods.setDueDate(ticket, "2025-03-31");
-				SferaHelperMethods.setProject(ticket.getNumber(), "f9696ccf-0f8d-431e-a803-9d00ee6e3329");// проект 2973
+				//SferaHelperMethods.setProject(ticket.getNumber(), "f9696ccf-0f8d-431e-a803-9d00ee6e3329");// проект 2973
+				//SferaHelperMethods.setSystem(ticket.getNumber(), "\"1553 Заявки ФЛ\"");
+				SferaHelperMethods.setSystem(ticket.getNumber(), "1553 Заявки ФЛ");
 			}
 			System.out.println("end");
 		}
