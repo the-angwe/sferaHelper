@@ -4,17 +4,27 @@ import com.botov.sferaHelper.bo.TicketType;
 import com.botov.sferaHelper.dto.GetTicketDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.PatchTicketDto;
+import retrofit2.Response;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 
 public class SferaHelperMethods {
 
     public static ListTicketsDto listTicketsByQuery(String query) throws IOException {
-        var response = SferaService.INSTANCE.listTicketsByQuery(query, 1000).execute();
-        System.out.println("response=" + response);
-        System.out.println("response.body()=" + response.body());
-        return response.body();
+        int page = 0;
+        ListTicketsDto body = new ListTicketsDto();
+        body.setContent(new ArrayList<>());
+        Response<ListTicketsDto> response;
+        do {
+            response = SferaService.INSTANCE.listTicketsByQuery(query, 1000, page++).execute();
+            System.out.println("response=" + response);
+            System.out.println("body=" + body);
+            body.getContent().addAll(response.body().getContent());
+            body.setTotalElements(response.body().getTotalElements());
+        } while (response.body().getTotalElements().intValue() > body.getContent().size());
+        return body;
     }
 
     public static GetTicketDto ticketByNumber(String number) throws IOException {
