@@ -1,8 +1,11 @@
 package com.botov.sferaHelper.dto;
 
+import com.botov.sferaHelper.bo.TicketType;
 import lombok.Data;
 
 import java.util.Set;
+
+import static com.botov.sferaHelper.bo.TicketType.TECH_DEBT;
 
 @Data
 public class GetTicketDto {
@@ -13,4 +16,13 @@ public class GetTicketDto {
     private WorkGroupDto workGroup;
     private TechDebtConsequenceDto techDebtConsequence;
     private TypeDto type;
+
+    public boolean isTechDebtIB() {
+        if (TicketType.getTicketType(this) == TECH_DEBT
+            && techDebtConsequence!=null
+            && "ИБ".equals(techDebtConsequence.getName())) {
+            return true;
+        }
+        return false;
+    }
 }
