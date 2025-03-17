@@ -12,13 +12,13 @@ import java.util.List;
 public class SferaMonitoring {
 
     public static void main(String... args) throws IOException {
+        checkProdBugs();
         checkTicketsWithoutEpics();
         checkTicketsWithoutEstimation();
         checkTicketsWithoutSprint();
-        checkProdBugs();
+        checkTicketsWithWrongSystems();
+        checkTicketsWithWrongProject();
 
-        //задачи с неправильным проектом
-        //Вообще любый задачи не по 1553 (особенно по 1672_3)
 
         //истории без критериев приёмки
         //ключевые поставки стрима??
@@ -29,8 +29,30 @@ public class SferaMonitoring {
         //просроченные РДСы и РДСы в статус "создано" или с открытыми вопросами
     }
 
+    private static void checkTicketsWithWrongProject() throws IOException {
+        //задачи с неправильным проектом (не 2973)
+        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and projectConsumer != 'f9696ccf-0f8d-431e-a803-9d00ee6e3329'";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+        System.err.println("задачи с неправильным проектом (не 2973) (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            SferaHelperMethods.setProject(ticket.getNumber(), "f9696ccf-0f8d-431e-a803-9d00ee6e3329");// проект 2973
+            System.out.println(ticket.getNumber());
+        }
+    }
+
+    private static void checkTicketsWithWrongSystems() throws IOException {
+        //Задачи не по 1553 (особенно по 1672_3)
+        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and systems != \"1553 Заявки ФЛ\"";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+        System.err.println("Задачи не по 1553 (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            SferaHelperMethods.setSystem(ticket.getNumber(), "\"1553 Заявки ФЛ\"");
+            System.out.println(ticket.getNumber());
+        }
+    }
+
     public static void checkProdBugs() throws IOException {
-        //баги прода
+        //дефекты прода
         String query = "type=\"defect\" and area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer')";
         //String query = "area=\"FRNRSA\" and number='FRNRSA-7274'";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
@@ -44,7 +66,7 @@ public class SferaMonitoring {
         }
 
         System.out.println();
-        System.out.println("ProdBugs:");
+        System.err.println("дефекты прода (кол-во " + listTicketsDto.getContent().size() + "):");
         for (GetTicketDto ticket : prodDefects) {
             System.out.println(ticket.getNumber());
         }
@@ -54,7 +76,7 @@ public class SferaMonitoring {
         //задачи без эпиков
         String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and parent = null";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
-        System.out.println("задачи без эпиков (кол-во " + listTicketsDto.getContent().size() + "):");
+        System.err.println("задачи без эпиков (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             System.out.println(ticket.getNumber());
         }
@@ -64,7 +86,7 @@ public class SferaMonitoring {
         //задачи без оценок
         String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and estimation = null";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
-        System.out.println("задачи без оценок (кол-во " + listTicketsDto.getContent().size() + "):");
+        System.err.println("задачи без оценок (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             SferaHelperMethods.setEstimation(ticket.getNumber(), 3600L);
             System.out.println(ticket.getNumber());
@@ -75,7 +97,7 @@ public class SferaMonitoring {
         //задачи вне спринтов
         String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and sprint = null";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
-        System.out.println("задачи вне спринтов (кол-во " + listTicketsDto.getContent().size() + "):");
+        System.err.println("задачи вне спринтов (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             System.out.println(ticket.getNumber());
         }
