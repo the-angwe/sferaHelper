@@ -22,8 +22,7 @@ public class SferaMonitoring {
         checkTicketsWithWrongProject();
         checkCreatedRDSs();
         checkOverdueRDSs();
-
-        //checkRDSs();
+        checkRDSWithOpenQuestions();
 
 
         //истории без критериев приёмки
@@ -33,6 +32,18 @@ public class SferaMonitoring {
         //новые этики на мне
         //эпики без оценок, без критериев приёмка, без декопозиции
 
+    }
+
+    private static void checkRDSWithOpenQuestions() throws IOException {
+        //RDS с открытыми вопросами
+        String query = "area='RDS' and openQuestion = 'открытый вопрос'  and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\", \"vtb4065673@corp.dev.vtb\", \"vtb70190852@corp.dev.vtb\", \"vtb4075541@corp.dev.vtb\", \"vtb4078565@corp.dev.vtb\", \"VTB4075541@corp.dev.vtb\")";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("RDS с открытыми вопросами (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(ticket.getNumber());
+        }
     }
 
     private static void checkOverdueRDSs() throws IOException {
@@ -48,23 +59,6 @@ public class SferaMonitoring {
         System.err.println("просроченные РДСы (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             System.err.println(ticket.getNumber());
-        }
-    }
-
-    private static void checkRDSs() throws IOException {
-        //просроченные РДСы или с открытыми вопросами
-        String query = "area='RDS' and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\", \"vtb4065673@corp.dev.vtb\", \"vtb70190852@corp.dev.vtb\", \"vtb4075541@corp.dev.vtb\", \"vtb4078565@corp.dev.vtb\", \"VTB4075541@corp.dev.vtb\")";
-        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
-
-        List<GetTicketDto> prodDefects = new ArrayList<>();
-        for (ListTicketShortDto listTicketShortDto: listTicketsDto.getContent()) {
-            GetTicketDto ticket = SferaHelperMethods.ticketByNumber(listTicketShortDto.getNumber());
-        }
-
-        System.out.println();
-        System.err.println("дефекты прода (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (GetTicketDto ticket : prodDefects) {
-            System.out.println(ticket.getNumber());
         }
     }
 
