@@ -23,15 +23,64 @@ public class SferaMonitoring {
         checkCreatedRDSs();
         checkOverdueRDSs();
         checkRDSWithOpenQuestions();
+        checkStoriesWithoutAcceptanceCriteria();
+        checkEpicsWithoutEstimation();
+        checkEpicsWithoutAcceptanceCriteria();
+        checkEpicsWithoutOpenedChildren();
 
+        //новые эпики на мне
+    }
 
+    private static void checkEpicsWithoutOpenedChildren() throws IOException {
+        //эпики без декопозиции
+        String query = "area=\"STROMS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\") " +
+                "and not hasOpenedChildren()";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("эпики без декопозиции (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(ticket.getNumber());
+        }
+    }
+
+    private static void checkEpicsWithoutAcceptanceCriteria() throws IOException {
+        //эпики без критериев приёмки
+        String query = "area=\"STROMS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\") " +
+                "and (acceptanceCriteria=null or acceptanceCriteria='' or acceptanceCriteria='!' or acceptanceCriteria='-' or acceptanceCriteria=' ')";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("эпики без критериев приёмки (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(ticket.getNumber());
+        }
+    }
+
+    private static void checkEpicsWithoutEstimation() throws IOException {
+        //эпики без оценок
+        String query = "area=\"STROMS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\") " +
+                "and estimation = null";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("эпики без оценок (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(ticket.getNumber());
+        }
+    }
+
+    private static void checkStoriesWithoutAcceptanceCriteria() throws IOException {
         //истории без критериев приёмки
-        //ключевые поставки стрима??
-        //Новая функциональность по нецелевым ИС?
+        String query = "type=\"story\" and area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') " +
+                "and (acceptanceCriteria=null or acceptanceCriteria='' or acceptanceCriteria='-' or acceptanceCriteria=' ')";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
-        //новые этики на мне
-        //эпики без оценок, без критериев приёмка, без декопозиции
-
+        System.err.println();
+        System.err.println("истории без критериев приёмки (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(ticket.getNumber());
+        }
     }
 
     private static void checkRDSWithOpenQuestions() throws IOException {
