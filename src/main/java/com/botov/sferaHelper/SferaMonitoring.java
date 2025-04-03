@@ -164,7 +164,7 @@ public class SferaMonitoring {
         }
 
         System.err.println();
-        System.err.println("дефекты прода (кол-во " + listTicketsDto.getContent().size() + "):");
+        System.err.println("дефекты прода (кол-во " + prodDefects.size() + "):");
         for (GetTicketDto ticket : prodDefects) {
             System.err.println(ticket.getNumber());
         }
