@@ -37,12 +37,7 @@ public class UnsafeOkHttpClient {
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0]);
-            builder.hostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
+            builder.hostnameVerifier((hostname, session) -> true);
 
             OkHttpClient okHttpClient = builder
                     .connectTimeout(60, TimeUnit.SECONDS)
@@ -50,6 +45,9 @@ public class UnsafeOkHttpClient {
                     .writeTimeout(60, TimeUnit.SECONDS)
                     .addInterceptor(
                             new AuthInterceptor()
+                    )
+                    .addInterceptor(
+                            new LoggingInterceptor()
                     )
                     .build();
 

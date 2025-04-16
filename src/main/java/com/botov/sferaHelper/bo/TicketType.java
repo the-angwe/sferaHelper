@@ -3,7 +3,6 @@ package com.botov.sferaHelper.bo;
 import com.botov.sferaHelper.dto.GetTicketDto;
 import com.botov.sferaHelper.dto.PatchTicketDto;
 
-import java.util.Collections;
 import java.util.function.Supplier;
 
 public enum TicketType {
@@ -64,13 +63,7 @@ public enum TicketType {
             return false;
         }
 
-        if (ticket != null
-                && ticket.getWorkGroup() != null
-                && ticket.getWorkGroup().getName() != null
-                && ticket.getWorkGroup().getName().equals("Технический долг")
-                && ticket.getTechDebtConsequence() != null
-                && ticket.getTechDebtConsequence().getName() != null
-                && ticket.getTechDebtConsequence().getName().equals("ИБ")) {
+        if (ticket.isTechDebtIB()) {
             return false;
         }
         return true;

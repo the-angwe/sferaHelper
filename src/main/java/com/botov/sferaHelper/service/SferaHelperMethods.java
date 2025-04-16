@@ -4,17 +4,27 @@ import com.botov.sferaHelper.bo.TicketType;
 import com.botov.sferaHelper.dto.GetTicketDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.PatchTicketDto;
+import retrofit2.Response;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 
 public class SferaHelperMethods {
 
     public static ListTicketsDto listTicketsByQuery(String query) throws IOException {
-        var response = SferaService.INSTANCE.listTicketsByQuery(query, 1000).execute();
-        System.out.println("response=" + response);
-        System.out.println("response.body()=" + response.body());
-        return response.body();
+        int page = 0;
+        ListTicketsDto body = new ListTicketsDto();
+        body.setContent(new ArrayList<>());
+        Response<ListTicketsDto> response;
+        do {
+            response = SferaService.INSTANCE.listTicketsByQuery(query, 1000, page++).execute();
+            System.out.println("response=" + response);
+            System.out.println("body=" + body);
+            body.getContent().addAll(response.body().getContent());
+            body.setTotalElements(response.body().getTotalElements());
+        } while (response.body().getTotalElements().intValue() > body.getContent().size());
+        return body;
     }
 
     public static GetTicketDto ticketByNumber(String number) throws IOException {
@@ -42,11 +52,10 @@ public class SferaHelperMethods {
         patchTicket(number, ticketDto);
     }
 
-    //TODO not working
     public static void setSystem(String number, String system) throws IOException {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setSystems(Collections.singleton(system));
-        patchTicket(number, ticketDto);
+        patchTicket2(number, ticketDto);
     }
 
     public static void patchTicket(String number, PatchTicketDto ticketDto) throws IOException {
@@ -62,5 +71,11 @@ public class SferaHelperMethods {
     private static void patchTicket2(String number, PatchTicketDto ticketDto) throws IOException {
         System.out.println("patch2 " + number + " with " + ticketDto);
         SferaService.INSTANCE.patchTicket2(number, ticketDto).execute();
+    }
+
+    public static void setProject(String number, String project) throws IOException {
+        PatchTicketDto ticketDto = new PatchTicketDto();
+        ticketDto.setProjectConsumer(Collections.singleton(project));
+        patchTicket2(number, ticketDto);
     }
 }
