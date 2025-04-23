@@ -14,7 +14,7 @@ import java.util.List;
 public class SferaMonitoring {
 
     public static void main(String... args) throws IOException {
-        checkProdBugs();
+        //checkProdBugs();
         checkTicketsWithoutEpics();
         checkTicketsWithoutEstimation();
         checkTicketsWithoutSprint();
@@ -138,7 +138,7 @@ public class SferaMonitoring {
 
     private static void checkTicketsWithWrongSystems() throws IOException {
         //Задачи не по 1553 (особенно по 1672_3)
-        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and systems != \"1553 Заявки ФЛ\"";
+        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and systems not in (\"1553 Заявки ФЛ\", \"1553_1 Распоряжения ФЛ\")";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         System.err.println();
