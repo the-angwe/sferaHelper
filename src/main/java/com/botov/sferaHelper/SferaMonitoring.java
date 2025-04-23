@@ -14,7 +14,7 @@ import java.util.List;
 public class SferaMonitoring {
 
     public static void main(String... args) throws IOException {
-        //checkProdBugs();
+        checkProdBugs();
         checkTicketsWithoutEpics();
         checkTicketsWithoutEstimation();
         checkTicketsWithoutSprint();
