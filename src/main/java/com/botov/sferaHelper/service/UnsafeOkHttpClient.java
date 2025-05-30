@@ -2,8 +2,10 @@ package com.botov.sferaHelper.service;
 
 import okhttp3.OkHttpClient;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.*;
 import java.security.cert.CertificateException;
+import java.util.concurrent.TimeUnit;
 
 public class UnsafeOkHttpClient {
     public static OkHttpClient getUnsafeOkHttpClient() {
@@ -38,6 +40,9 @@ public class UnsafeOkHttpClient {
             builder.hostnameVerifier((hostname, session) -> true);
 
             OkHttpClient okHttpClient = builder
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
                     .addInterceptor(
                             new AuthInterceptor()
                     )
@@ -45,6 +50,7 @@ public class UnsafeOkHttpClient {
                             new LoggingInterceptor()
                     )
                     .build();
+
             return okHttpClient;
         } catch (Exception e) {
             throw new RuntimeException(e);
