@@ -5,16 +5,27 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 class AuthInterceptor implements Interceptor {
+
+    private String cookie = readCookie();
+
+    private String readCookie() {
+        try {
+            return cookie = new String(Files.readString(Paths.get("cookie.txt")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request  = chain.request();
         Request authenticatedRequest = request.newBuilder().addHeader(
                 "Cookie",
-                "" +
-                       "rxVisitor=1744569892682D2LV0MPS4CEVGIQBNUS52SJ7VA74BBDV; LANGUAGE=ru; SFERACODEID=s2; dtSa=-; ACCESS_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtUUNteHVDTzltT3lQNU56OTJXcHZrcUNWcjJDVlU5MHdKMi1veTYzcF9rIn0.eyJleHAiOjE3NDU0NDA5NDUsImlhdCI6MTc0NTQ0MDA0NSwianRpIjoiODQ0YTg0YzItMmVkYS00MzlmLWJlZTctZTdjY2M3MTBlOGQwIiwiaXNzIjoiaHR0cHM6Ly9zZmVyYS1rZXljbG9hay1uZXcuaW5uby5sb2NhbC9hdXRoL3JlYWxtcy9zZmVyYS1zZXJ2aWNlcyIsInN1YiI6IlZUQjcwMTY2MDUyQGNvcnAuZGV2LnZ0YiIsInR5cCI6IkJlYXJlciIsImF6cCI6ImNoYW5uZWwiLCJzaWQiOiI1ZjUzMTVkMC03MGIwLTQ5N2EtYTY0YS0wOGQyZTI2Nzg2YjIiLCJzY29wZSI6InByb2ZpbGUiLCJjaGFubmVsIjoic2ZlcmEiLCJuYW1lIjoi0JTQvNC40YLRgNC40Lkg0JHQvtGC0L7QsiIsInByZWZlcnJlZF91c2VybmFtZSI6InZ0YjcwMTY2MDUyIiwibWlkZGxlX25hbWUiOiLQnNC40YXQsNC50LvQvtCy0LjRhyIsImdpdmVuX25hbWUiOiLQlNC80LjRgtGA0LjQuSIsImZhbWlseV9uYW1lIjoi0JHQvtGC0L7QsiIsImVtYWlsIjoiZG1ib3RvdkBkZXYudnRiLnJ1IiwidXNlclByaW5jaXBhbE5hbWUiOiJWVEI3MDE2NjA1MkBjb3JwLmRldi52dGIifQ.MYa7xS_oDjmSsFKFMi2Qj4GZtFCpN9YTV1Dr_nVFFNz3iw47QdgXSUQ2u_WhWcfCUqxSXZAUvW3crlgwRifKlfwCciBxn9IDWhcfzDimFzuo05iSOzk4kXNJkiC_68hs-IxjSeS-LZs1jeUe_4uG0MCzSJER1FDtnjx1tGRT_W04SP-aq5yU5AHj2KGTAKFsgAFZGoroH2LGKVSRp8800kCcKBYApBbk1zJhPMVo1rc0YWsfLaoG8HfnVOsWNuRAmt1XXOiUzsrY6ZM3gYhBpT3C9ptCnTgAypfNR196yK-GaTe2awT5nF2s3fcIpKltxWV1Oo_NIapZ5akgNoBS6A; REFRESH_TOKEN=eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI4Y2U5YzAyMS1hNjk4LTQxYmQtODlmZi0xMGY4YjM0OTgzYjcifQ.eyJleHAiOjE3NDU0NDcyNDUsImlhdCI6MTc0NTQ0MDA0NSwianRpIjoiNzM2MzQ3YWMtMjYyNi00NDE3LWFjZjEtMTA0MTRhYjYxYzNiIiwiaXNzIjoiaHR0cHM6Ly9zZmVyYS1rZXljbG9hay1uZXcuaW5uby5sb2NhbC9hdXRoL3JlYWxtcy9zZmVyYS1zZXJ2aWNlcyIsImF1ZCI6Imh0dHBzOi8vc2ZlcmEta2V5Y2xvYWstbmV3Lmlubm8ubG9jYWwvYXV0aC9yZWFsbXMvc2ZlcmEtc2VydmljZXMiLCJzdWIiOiJWVEI3MDE2NjA1MkBjb3JwLmRldi52dGIiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoiY2hhbm5lbCIsInNpZCI6IjVmNTMxNWQwLTcwYjAtNDk3YS1hNjRhLTA4ZDJlMjY3ODZiMiIsInNjb3BlIjoiYmFzaWMgcHJvZmlsZSJ9.tWMtWfW3-Sb1kScCEQLdz2F5P0CUuv5noRLMJQ1CJKtSnrtW_BBC7qZVNao17BuA-J68iLPZyzhCQ4KXd8A8ug; ID_TOKEN=; CHECK_AUTH=true; dtLatC=1; JSESSIONID=37412F7D00363CB0DFC26E13723F82E1; dtCookie=v_4_srv_18_sn_F51827BC7667CCFA7175B7876D83C0C9_perc_100000_ol_0_mul_1_app-3Aba15fcbff5d99f0e_1_app-3Af5beb900f30c572b_1; rxvt=1745441864473|1745439555069; dtPC=18$321716_745h83vCWADSEDKPCUTCWRPPEVUOCMALMFBICAB-0e0"        ).build();
-        return chain.proceed(authenticatedRequest);
+                cookie).build();
+         return chain.proceed(authenticatedRequest);
     }
 }
