@@ -13,6 +13,8 @@ import java.util.List;
 
 public class SferaMonitoring {
 
+    public static final String SFERA_TICKET_START_PATH = "https://sfera.inno.local/tasks/task/";
+
     public static void main(String... args) throws IOException {
         checkProdBugs();
         checkTicketsWithoutEpics();
@@ -40,7 +42,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("эпики без декопозиции (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -53,7 +55,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("эпики без критериев приёмки (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -66,7 +68,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("эпики без оценок (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -79,7 +81,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("истории без критериев приёмки (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -91,7 +93,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("RDS с открытыми вопросами (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -107,7 +109,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("просроченные РДСы (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -119,7 +121,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("RDS в статусe \"Создано\" (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -132,7 +134,7 @@ public class SferaMonitoring {
         System.err.println("задачи с неправильным проектом (не 2973) (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             SferaHelperMethods.setProject(ticket.getNumber(), "f9696ccf-0f8d-431e-a803-9d00ee6e3329");// проект 2973
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -145,13 +147,14 @@ public class SferaMonitoring {
         System.err.println("Задачи не по 1553 (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             SferaHelperMethods.setSystem(ticket.getNumber(), "\"1553 Заявки ФЛ\"");
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
     public static void checkProdBugs() throws IOException {
         //дефекты прода
         String query = "type=\"defect\" and area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer')";
+        //String query = "type=\"defect\" and area=\"FRNRSA\" and createDate >= '2025-01-01' and systems != \"1672_3 Аутентификация подтверждение операций\"";
         //String query = "area=\"FRNRSA\" and number='FRNRSA-7274'";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
@@ -166,7 +169,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("дефекты прода (кол-во " + prodDefects.size() + "):");
         for (GetTicketDto ticket : prodDefects) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -178,7 +181,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("задачи без эпиков (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -191,7 +194,7 @@ public class SferaMonitoring {
         System.err.println("задачи без оценок (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             SferaHelperMethods.setEstimation(ticket.getNumber(), 3600L);
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 
@@ -203,7 +206,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("задачи вне спринтов (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            System.err.println(ticket.getNumber());
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 }
