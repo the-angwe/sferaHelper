@@ -26,7 +26,7 @@ public class SferaHelperTechDebtIB {
         System.out.println();
         System.out.println("TechDebtIBs:");
         for (GetTicketDto ticket : techDebtIBs) {
-            System.out.println(ticket.getNumber());
+            System.out.println(SferaMonitoring.SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
 }
