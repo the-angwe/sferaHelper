@@ -1,5 +1,7 @@
 package com.botov.sferaHelper.dto;
 
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Since;
 import lombok.Data;
 
 @Data

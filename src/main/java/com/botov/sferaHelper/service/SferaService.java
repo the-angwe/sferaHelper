@@ -4,10 +4,18 @@ import com.botov.sferaHelper.dto.AttributesDto;
 import com.botov.sferaHelper.dto.GetTicketDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.PatchTicketDto;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.LongSerializationPolicy;
+import com.google.gson.internal.Excluder;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.*;
+
+import java.util.Collections;
+import java.util.List;
 
 public interface SferaService {
 
@@ -17,7 +25,12 @@ public interface SferaService {
         var client = UnsafeOkHttpClient.getUnsafeOkHttpClient();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://sfera.inno.local/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(
+                        GsonConverterFactory.create()
+/*                        GsonConverterFactory.create(
+                                new GsonBuilder().serializeNulls().create()
+                        )*/
+                )
                 .client(client)
                 .build();
 
@@ -37,6 +50,6 @@ public interface SferaService {
     Call<GetTicketDto> getTicket(@Path("number") String number);
 
     @HTTP(method = "DELETE", path = "app/tasks/api/v1/entities/attributes", hasBody = true)
-    Call<Void> deleteAttributes(@Body AttributesDto attributes);
+    Call<Void> deleteAttributes(@Body List<AttributesDto> attributes);
 
 }

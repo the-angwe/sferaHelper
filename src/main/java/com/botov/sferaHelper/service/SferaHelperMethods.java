@@ -10,6 +10,7 @@ import retrofit2.Response;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class SferaHelperMethods {
 
@@ -82,10 +83,10 @@ public class SferaHelperMethods {
 
     public static void setSprint(String number, String sprint) throws IOException {
         if (sprint == null) {
-            AttributesDto attributes = new AttributesDto();
-            attributes.setNumber(number);
-            attributes.setAttribute("sprint");
-            SferaService.INSTANCE.deleteAttributes(attributes).execute();
+            AttributesDto attribute = new AttributesDto();
+            attribute.setNumber(number);
+            attribute.setAttribute("sprint");
+            SferaService.INSTANCE.deleteAttributes(List.of(attribute)).execute();
         } else {
             throw new RuntimeException("Not implemented");
         }
