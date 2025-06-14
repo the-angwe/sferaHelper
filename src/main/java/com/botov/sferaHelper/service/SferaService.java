@@ -1,5 +1,6 @@
 package com.botov.sferaHelper.service;
 
+import com.botov.sferaHelper.dto.AttributesDto;
 import com.botov.sferaHelper.dto.GetTicketDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.PatchTicketDto;
@@ -34,5 +35,8 @@ public interface SferaService {
 
     @GET("app/tasks/api/v1/entity-views/{number}")
     Call<GetTicketDto> getTicket(@Path("number") String number);
+
+    @HTTP(method = "DELETE", path = "app/tasks/api/v1/entities/attributes", hasBody = true)
+    Call<Void> deleteAttributes(@Body AttributesDto attributes);
 
 }

@@ -1,6 +1,7 @@
 package com.botov.sferaHelper.service;
 
 import com.botov.sferaHelper.bo.TicketType;
+import com.botov.sferaHelper.dto.AttributesDto;
 import com.botov.sferaHelper.dto.GetTicketDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.PatchTicketDto;
@@ -77,5 +78,16 @@ public class SferaHelperMethods {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setProjectConsumer(Collections.singleton(project));
         patchTicket2(number, ticketDto);
+    }
+
+    public static void setSprint(String number, String sprint) throws IOException {
+        if (sprint == null) {
+            AttributesDto attributes = new AttributesDto();
+            attributes.setNumber(number);
+            attributes.setAttribute("sprint");
+            SferaService.INSTANCE.deleteAttributes(attributes).execute();
+        } else {
+            throw new RuntimeException("Not implemented");
+        }
     }
 }
