@@ -26,7 +26,7 @@ public enum TicketType {
     DEFECT(false, () -> {
         throw new RuntimeException("DEFECT is not for patch");
     }),
-    OTHER(true, () -> {
+    OTHER(false, () -> {
         throw new RuntimeException("OTHER is not for patch");
     });
 
