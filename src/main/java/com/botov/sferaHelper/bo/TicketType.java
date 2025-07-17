@@ -26,6 +26,16 @@ public enum TicketType {
     DEFECT(false, () -> {
         throw new RuntimeException("DEFECT is not for patch");
     }),
+    LINEAR(true, () -> {
+        PatchTicketDto ticketDto = new PatchTicketDto();
+        ticketDto.setWorkGroup("Линейная деятельность");
+        return ticketDto;
+    }),
+    SUPPORT(true, () -> {
+        PatchTicketDto ticketDto = new PatchTicketDto();
+        ticketDto.setWorkGroup("Сопровождение");
+        return ticketDto;
+    }),
     OTHER(false, () -> {
         throw new RuntimeException("OTHER is not for patch");
     });
@@ -50,6 +60,12 @@ public enum TicketType {
         }
         if (ticket.getWorkGroup().getName().equals("Архитектурная задача")) {
             return ARH;
+        }
+        if (ticket.getWorkGroup().getName().equals("Линейная деятельность")) {
+            return LINEAR;
+        }
+        if (ticket.getWorkGroup().getName().equals("Сопровождение")) {
+            return SUPPORT;
         }
         return OTHER;
     }
