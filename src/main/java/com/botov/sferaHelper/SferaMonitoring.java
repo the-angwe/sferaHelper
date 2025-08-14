@@ -24,6 +24,7 @@ public class SferaMonitoring {
         checkTicketsWithWrongProject();
         checkCreatedRDSs();
         checkOverdueRDSs();
+        checkOverdueFRNRSAs();
         checkRDSWithOpenQuestions();
         checkStoriesWithoutAcceptanceCriteria();
         checkEpicsWithoutEstimation();
@@ -98,16 +99,27 @@ public class SferaMonitoring {
     }
 
     private static void checkOverdueRDSs() throws IOException {
+        checkOverdue("RDS", "assignee in (\"vtb70166052@corp.dev.vtb\", \"vtb4065673@corp.dev.vtb\", \"vtb70190852@corp.dev.vtb\", \"vtb4075541@corp.dev.vtb\", \"vtb4078565@corp.dev.vtb\", \"VTB4075541@corp.dev.vtb\")");
+    }
+
+    private static void checkOverdueFRNRSAs() throws IOException {
+        checkOverdue("FRNRSA", null);
+    }
+
+    private static void checkOverdue(String area, String filter) throws IOException {
         //просроченные РДСы
         String dueDate = LocalDate.now().plusDays(15).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String query = "area='RDS' and status not in ('closed', 'done', 'rejectedByThePerformer') and " +
+        String query = "area='" + area + "' and status not in ('closed', 'done', 'rejectedByThePerformer') and " +
                 "((dueDate = null) or (dueDate < '"
                 + dueDate +
-                "')) and assignee in (\"vtb70166052@corp.dev.vtb\", \"vtb4065673@corp.dev.vtb\", \"vtb70190852@corp.dev.vtb\", \"vtb4075541@corp.dev.vtb\", \"vtb4078565@corp.dev.vtb\", \"VTB4075541@corp.dev.vtb\")";
+                "'))";
+        if (filter != null) {
+            query = query + " and " + filter;
+        }
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         System.err.println();
-        System.err.println("просроченные РДСы (кол-во " + listTicketsDto.getContent().size() + "):");
+        System.err.println("просроченные " + area + " (кол-во " + listTicketsDto.getContent().size() + "):");
         String newDueDate = LocalDate.now().plusDays(60).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
