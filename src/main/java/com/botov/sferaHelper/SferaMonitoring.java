@@ -99,7 +99,7 @@ public class SferaMonitoring {
 
     private static void checkOverdueRDSs() throws IOException {
         //просроченные РДСы
-        String dueDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String dueDate = LocalDate.now().plusDays(15).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String query = "area='RDS' and status not in ('closed', 'done', 'rejectedByThePerformer') and " +
                 "((dueDate = null) or (dueDate < '"
                 + dueDate +
@@ -108,8 +108,10 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("просроченные РДСы (кол-во " + listTicketsDto.getContent().size() + "):");
+        String newDueDate = LocalDate.now().plusDays(60).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
+            SferaHelperMethods.setDueDate(ticket.getNumber(), newDueDate);
         }
     }
 
