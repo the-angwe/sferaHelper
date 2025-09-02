@@ -16,4 +16,5 @@ public class PatchTicketDto {
     private String techDebtConsequence; //like "Другое"
     private String workGroup; //like "Технический долг"
     private String archTaskReason; //like "Прочие архитектурные задачи"
+    private String status; //like "onTheQueue"
 }

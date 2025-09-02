@@ -91,4 +91,10 @@ public class SferaHelperMethods {
             throw new RuntimeException("Not implemented");
         }
     }
+
+    public static void setStatus(String number, String status) throws IOException {
+        PatchTicketDto ticketDto = new PatchTicketDto();
+        ticketDto.setStatus(status);
+        patchTicket2(number, ticketDto);
+    }
 }
