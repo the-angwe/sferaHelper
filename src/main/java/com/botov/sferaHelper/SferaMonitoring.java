@@ -23,6 +23,8 @@ public class SferaMonitoring {
         checkTicketsWithWrongSystems();
         checkTicketsWithWrongProject();
         checkOverdueRDSs();
+        checkNotOnBotovRDSs();
+        checkYellowDeadlineRDSs();
         checkRDSsStatus();
         checkOverdueFRNRSAs();
         checkRDSWithOpenQuestions();
@@ -32,6 +34,32 @@ public class SferaMonitoring {
         checkEpicsWithoutOpenedChildren();
 
         //новые эпики на мне??
+    }
+
+    private static void checkNotOnBotovRDSs() throws IOException {
+        //РДСы по 1553_1, 1553 или 1672_3 не на Ботове
+        String query = "area=\"RDS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee not in (\"vtb70166052@corp.dev.vtb\") " +
+                "and (name ~ \"[1672_3]\" or name ~ \"[1553]\" or name ~ \"[1553_1]\")";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("РДСы по 1553_1, 1553 или 1672_3 не на Ботове (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
+        }
+    }
+
+    private static void checkYellowDeadlineRDSs() throws IOException {
+        //"Пожелтевшие RDS" https://sfera.inno.local/knowledge/pages?id=1675408
+        String query = "area=\"RDS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\") " +
+                "and label in ('YELLOW_DEADLINE_ALERT')";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("\"Пожелтевшие RDS\" (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
+        }
     }
 
     private static void checkEpicsWithoutOpenedChildren() throws IOException {
@@ -122,7 +150,7 @@ public class SferaMonitoring {
 
     private static void checkOverdue(String area, String filter) throws IOException {
         //просроченные РДСы
-        String dueDate = LocalDate.now().plusDays(15).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String dueDate = LocalDate.now().plusDays(60).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String query = "area='" + area + "' and status not in ('closed', 'done', 'rejectedByThePerformer') and " +
                 "((dueDate = null) or (dueDate < '"
                 + dueDate +

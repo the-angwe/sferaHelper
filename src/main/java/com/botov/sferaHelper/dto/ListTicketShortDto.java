@@ -7,6 +7,7 @@ import java.util.Set;
 @Data
 public class ListTicketShortDto {
     private Long id;
+    private String name;
     private String number;//like FRNRSA-5000
     private Long estimation;//in seconds
     private String parent;//like STROMS-1000
