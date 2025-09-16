@@ -11,6 +11,8 @@ import static com.botov.sferaHelper.bo.TicketType.TECH_DEBT;
 @Data
 public class GetTicketDto {
     private Long id;
+    private String name;
+    private AssigneeDto assignee;
     private String number;//like FRNRSA-5000
     private Long estimation;//in seconds
     private String dueDate;//like "2024-12-28"

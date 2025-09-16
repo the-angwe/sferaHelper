@@ -1,9 +1,6 @@
 package com.botov.sferaHelper.service;
 
-import com.botov.sferaHelper.dto.AttributesDto;
-import com.botov.sferaHelper.dto.GetTicketDto;
-import com.botov.sferaHelper.dto.ListTicketsDto;
-import com.botov.sferaHelper.dto.PatchTicketDto;
+import com.botov.sferaHelper.dto.*;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,5 +48,8 @@ public interface SferaService {
 
     @HTTP(method = "DELETE", path = "app/tasks/api/v1/entities/attributes", hasBody = true)
     Call<Void> deleteAttributes(@Body List<AttributesDto> attributes);
+
+    @POST("app/tasks/api/v1/entities/copy")
+    Call<TicketCopyResponseDto> copyTicket(@Body TicketCopyRequestDto requestDto);
 
 }

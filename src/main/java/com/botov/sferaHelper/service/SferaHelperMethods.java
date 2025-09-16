@@ -1,10 +1,7 @@
 package com.botov.sferaHelper.service;
 
 import com.botov.sferaHelper.bo.TicketType;
-import com.botov.sferaHelper.dto.AttributesDto;
-import com.botov.sferaHelper.dto.GetTicketDto;
-import com.botov.sferaHelper.dto.ListTicketsDto;
-import com.botov.sferaHelper.dto.PatchTicketDto;
+import com.botov.sferaHelper.dto.*;
 import retrofit2.Response;
 
 import java.io.IOException;
@@ -96,5 +93,17 @@ public class SferaHelperMethods {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setStatus(status);
         patchTicket2(number, ticketDto);
+    }
+
+    public static TicketCopyResponseDto copyTicket(GetTicketDto ticket) throws IOException {
+        System.out.println("copy " + ticket.getNumber());
+        TicketCopyRequestDto request = new TicketCopyRequestDto();
+        request.setEntity(ticket.getNumber());
+        request.setOverride(new OverrideDto());
+        request.getOverride().setName(ticket.getName());
+        var response = SferaService.INSTANCE.copyTicket(request).execute();
+        System.out.println("response=" + response);
+        System.out.println("response.body()=" + response.body());
+        return response.body();
     }
 }
