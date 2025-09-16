@@ -85,7 +85,12 @@ public class SferaHelperMethods {
             attribute.setAttribute("sprint");
             SferaService.INSTANCE.deleteAttributes(List.of(attribute)).execute();
         } else {
-            throw new RuntimeException("Not implemented");
+            //throw new RuntimeException("Not implemented");
+            PatchTicketDto ticketDto = new PatchTicketDto();
+            PatchSprintDto patchSprintDto = new PatchSprintDto();
+            patchSprintDto.setId(Integer.parseInt(sprint));
+            ticketDto.setSprint(Collections.singleton(patchSprintDto));
+            patchTicket2(number, ticketDto);
         }
     }
 
