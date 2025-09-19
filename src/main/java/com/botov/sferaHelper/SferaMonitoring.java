@@ -22,9 +22,12 @@ public class SferaMonitoring {
         checkTicketsWithoutSprint();
         checkTicketsWithWrongSystems();
         checkTicketsWithWrongProject();
+        checkTicketsWithBigEstimation();
         checkOverdueRDSs();
         checkNotOnBotovRDSs();
+        checkOnBotovNotMySystemRDSs();
         checkYellowDeadlineRDSs();
+        checkRedDeadlineRDSs();
         checkRDSsStatus();
         checkOverdueFRNRSAs();
         checkRDSWithOpenQuestions();
@@ -32,14 +35,37 @@ public class SferaMonitoring {
         checkEpicsWithoutEstimation();
         checkEpicsWithoutAcceptanceCriteria();
         checkEpicsWithoutOpenedChildren();
-
         //новые эпики на мне??
+    }
+
+    private static void checkOnBotovNotMySystemRDSs() throws IOException {
+        //РДСы не по 1553_1, 1553 или 1672_3 на Ботове
+        String query = "area=\"RDS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\") ";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+
+        List<ListTicketShortDto> notMySystemRDSs = new ArrayList<>();
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            if (!ticket.getName().startsWith("[1672_3]") &&
+                    !ticket.getName().startsWith("[1553]") &&
+                    !ticket.getName().startsWith("[1553_1]") &&
+                    !ticket.getNumber().equals("RDS-272592")) {//консультация по постпроцессорной очереди
+                notMySystemRDSs.add(ticket);
+            }
+        }
+
+        System.err.println();
+        System.err.println("РДСы не по 1553_1, 1553 или 1672_3 на Ботове (кол-во " + notMySystemRDSs.size() + "):");
+        for (ListTicketShortDto ticket: notMySystemRDSs) {
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
+        }
     }
 
     private static void checkNotOnBotovRDSs() throws IOException {
         //РДСы по 1553_1, 1553 или 1672_3 не на Ботове
         String query = "area=\"RDS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee not in (\"vtb70166052@corp.dev.vtb\") " +
-                "and (name ~ \"[1672_3]\" or name ~ \"[1553]\" or name ~ \"[1553_1]\")";
+                "and (name ~ \"[1672_3]\" or name ~ \"[1553]\" or name ~ \"[1553_1]\") " +
+                "and (streamExecutor = 'Омниканальный мидл' or streamExecutor = 'Базовые сервисы' or streamExecutor='Омниканальные микросервисные решения' or streamConsumer = 'Омниканальный мидл' or streamConsumer = 'Базовые сервисы' or streamConsumer='Омниканальные микросервисные решения')";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         System.err.println();
@@ -52,11 +78,26 @@ public class SferaMonitoring {
     private static void checkYellowDeadlineRDSs() throws IOException {
         //"Пожелтевшие RDS" https://sfera.inno.local/knowledge/pages?id=1675408
         String query = "area=\"RDS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\") " +
-                "and label in ('YELLOW_DEADLINE_ALERT')";
+                "and label in ('YELLOW_DEADLINE_ALERT') " +
+                " and (streamExecutor = 'Омниканальный мидл' or streamExecutor = 'Базовые сервисы' or streamExecutor='Омниканальные микросервисные решения' or streamConsumer = 'Омниканальный мидл' or streamConsumer = 'Базовые сервисы' or streamConsumer='Омниканальные микросервисные решения') ";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         System.err.println();
         System.err.println("\"Пожелтевшие RDS\" (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
+        }
+    }
+
+    private static void checkRedDeadlineRDSs() throws IOException {
+        //"Пожелтевшие RDS" https://sfera.inno.local/knowledge/pages?id=1675665
+        String query = "area=\"RDS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\") " +
+                "and label in ('RED_DEADLINE_MISSED') " +
+                " and (streamExecutor = 'Омниканальный мидл' or streamExecutor = 'Базовые сервисы' or streamExecutor='Омниканальные микросервисные решения' or streamConsumer = 'Омниканальный мидл' or streamConsumer = 'Базовые сервисы' or streamConsumer='Омниканальные микросервисные решения') ";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("\"Покрасневшие RDS\" (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
@@ -166,6 +207,19 @@ public class SferaMonitoring {
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
             SferaHelperMethods.setDueDate(ticket.getNumber(), newDueDate);
+        }
+    }
+
+    public static void checkTicketsWithBigEstimation() throws IOException {
+        //задачи с трудооценкой, большей чем 4 ч.д.
+        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and estimation>" + (3600L * 8 * 4) ;
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("задачи с трудооценкой, большей чем 4 ч.д. (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
+            SferaHelperMethods.setEstimation(ticket.getNumber(), 3600L * 8 * 4);
         }
     }
 
