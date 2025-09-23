@@ -36,6 +36,16 @@ public class SferaMonitoring {
         checkEpicsWithoutAcceptanceCriteria();
         checkEpicsWithoutOpenedChildren();
         //новые эпики на мне??
+
+        //найти эпики без фичей
+        //найти фичи без эпиков
+        //найти фичи без подзадач
+        //найти фичи без сторей
+        //найти эпики, на которых хоть что то , кроме фичей
+        //найти фичи, в которых трудооценка не на 0,87 больше, чем в эпиках
+        //найти эпики без суперспринта и срока
+        //найти фичи без суперспринта и срока
+
     }
 
     private static void checkOnBotovNotMySystemRDSs() throws IOException {
