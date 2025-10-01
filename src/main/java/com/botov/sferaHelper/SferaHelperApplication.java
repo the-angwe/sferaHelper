@@ -6,6 +6,7 @@ import com.botov.sferaHelper.service.SferaHelperMethods;
 
 import java.io.IOException;
 
+//делает произвольные простые изменения в Сфере
 class SferaHelperApplication {
 		public static void main(String... args) throws IOException {
 			//String query = "area='RDS'";

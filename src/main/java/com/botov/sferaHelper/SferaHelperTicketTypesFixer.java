@@ -9,6 +9,7 @@ import com.botov.sferaHelper.service.SferaHelperMethods;
 import java.io.IOException;
 import java.util.*;
 
+//выравнивает типа тикетов по квоте italonTicketTypesMap
 public class SferaHelperTicketTypesFixer {
 
     private static final HashMap<TicketType, Long> italonTicketTypesMap = new HashMap<>();
@@ -30,15 +31,6 @@ public class SferaHelperTicketTypesFixer {
     public static final long MIN_ESTIMATION_STEP = HOUR;// 1 hour
 
     public static void main(String... args) throws IOException {
-/*        GetTicketDto t = SferaHelperMethods.ticketByNumber("FRNRSA-5167");
-        TicketType tt = TicketType.getTicketType(t);
-        SferaHelperMethods.setTicketType(t.getNumber(), TicketType.NEW_FUNC);
-        SferaHelperMethods.setTicketType(t.getNumber(), TicketType.TECH_DEBT);
-        SferaHelperMethods.setTicketType(t.getNumber(), TicketType.ARH);
-        if (true) {
-            throw new RuntimeException();
-        }*/
-
         SferaMonitoring.checkTicketsWithBigEstimation();//"4350", "4351", "4352", "4353", "4354", "4355", "4356"
         String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and sprint = '4350'";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);

@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+//мониторит корректность задач, по возможности простые проблемы исправляет сам
 public class SferaMonitoring {
 
     public static final String SFERA_TICKET_START_PATH = "https://sfera.inno.local/tasks/task/";

@@ -8,6 +8,7 @@ import com.botov.sferaHelper.service.SferaHelperMethods;
 
 import java.io.IOException;
 
+//копирует одинаковые задачи в несколько спринтов sprints
 class SferaHelperTicketCopier {
 		public static void main(String... args) throws IOException {
 			String[] sprints = new String[] {"4350", "4351", "4352", "4353", "4354", "4355", "4356"};
