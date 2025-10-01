@@ -22,6 +22,7 @@ public class SferaMonitoring {
         checkTicketsWithoutEpics();
         checkTicketsWithoutEstimation();
         checkTicketsWithoutSprint();
+        checkEpicsWithWrongSystems();
         checkTicketsWithWrongSystems();
         checkTicketsWithWrongProject();
         checkTicketsWithBigEstimation();
@@ -95,9 +96,15 @@ public class SferaMonitoring {
                 "and (streamExecutor = 'Омниканальный мидл' or streamExecutor = 'Базовые сервисы' or streamExecutor='Омниканальные микросервисные решения' or streamConsumer = 'Омниканальный мидл' or streamConsumer = 'Базовые сервисы' or streamConsumer='Омниканальные микросервисные решения')";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
-        System.err.println();
-        System.err.println("РДСы по 1553_1, 1553 или 1672_3 не на Ботове (кол-во " + listTicketsDto.getContent().size() + "):");
+        List<ListTicketShortDto> notMyRDSs = new ArrayList<>();
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            if (!ticket.getNumber().equals("RDS-313296")) {//консультация по постпроцессорной очереди
+                notMyRDSs.add(ticket);
+            }
+        }
+        System.err.println();
+        System.err.println("РДСы по 1553_1, 1553 или 1672_3 не на Ботове (кол-во " + notMyRDSs.size() + "):");
+        for (ListTicketShortDto ticket: notMyRDSs) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
         }
     }
@@ -263,15 +270,28 @@ public class SferaMonitoring {
         }
     }
 
+    private static void checkEpicsWithWrongSystems() throws IOException {
+        //"Эпики" не по 1553 (особенно по 1672_3)
+        String query = "area=\"STROMS\" and status not in ('closed', 'done', 'rejectedByThePerformer')  and assignee in (\"vtb70166052@corp.dev.vtb\") and systems not in (\"1553 Заявки ФЛ\")";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("Эпики не по 1553 (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            SferaHelperMethods.setSystem(ticket.getNumber(), "1553 Заявки ФЛ");
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
+        }
+    }
+
     private static void checkTicketsWithWrongSystems() throws IOException {
         //Задачи не по 1553 (особенно по 1672_3)
-        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and systems not in (\"1553 Заявки ФЛ\", \"1553_1 Распоряжения ФЛ\")";
+        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and systems not in (\"1553 Заявки ФЛ\")";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         System.err.println();
         System.err.println("Задачи не по 1553 (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            SferaHelperMethods.setSystem(ticket.getNumber(), "\"1553 Заявки ФЛ\"");
+            SferaHelperMethods.setSystem(ticket.getNumber(), "1553 Заявки ФЛ");
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
