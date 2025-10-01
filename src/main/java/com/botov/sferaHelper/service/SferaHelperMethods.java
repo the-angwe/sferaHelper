@@ -111,4 +111,10 @@ public class SferaHelperMethods {
         System.out.println("response.body()=" + response.body());
         return response.body();
     }
+
+    public static void setResolution(String number, String resolution) throws IOException {
+        PatchTicketDto ticketDto = new PatchTicketDto();
+        ticketDto.setResolution(resolution);
+        patchTicket2(number, ticketDto);
+    }
 }

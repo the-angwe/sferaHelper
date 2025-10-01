@@ -18,4 +18,5 @@ public class PatchTicketDto {
     private String workGroup; //like "Технический долг"
     private String archTaskReason; //like "Прочие архитектурные задачи"
     private String status; //like "onTheQueue"
+    private String resolution; //like "Готово"
 }

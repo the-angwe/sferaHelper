@@ -17,6 +17,7 @@ public class SferaMonitoring {
 
     public static void main(String... args) throws IOException {
         checkProdBugs();
+        checkClosedTicketsWithoutResolution();
         checkTicketsWithoutEpics();
         checkTicketsWithoutEstimation();
         checkTicketsWithoutSprint();
@@ -46,6 +47,21 @@ public class SferaMonitoring {
         //найти эпики без суперспринта и срока
         //найти фичи без суперспринта и срока
 
+        //выполненные задачи, но не закрытые
+
+    }
+
+    private static void checkClosedTicketsWithoutResolution() throws IOException {
+        //Закрытые задачи без резолюции
+        String query = "area=\"FRNRSA\" and status in ('closed') and resolution = null";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("Закрытые задачи без резолюции (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
+            SferaHelperMethods.setResolution(ticket.getNumber(), "Готово");
+        }
     }
 
     private static void checkOnBotovNotMySystemRDSs() throws IOException {
