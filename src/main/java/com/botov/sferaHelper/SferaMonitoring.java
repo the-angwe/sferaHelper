@@ -117,7 +117,7 @@ public class SferaMonitoring {
     }
 
     private static void checkRedDeadlineRDSs() throws IOException {
-        //"Пожелтевшие RDS" https://sfera.inno.local/knowledge/pages?id=1675665
+        //"Покрасневшие RDS" https://sfera.inno.local/knowledge/pages?id=1675665
         String query = "area=\"RDS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and assignee in (\"vtb70166052@corp.dev.vtb\") " +
                 "and label in ('RED_DEADLINE_MISSED') " +
                 " and (streamExecutor = 'Омниканальный мидл' or streamExecutor = 'Базовые сервисы' or streamExecutor='Омниканальные микросервисные решения' or streamConsumer = 'Омниканальный мидл' or streamConsumer = 'Базовые сервисы' or streamConsumer='Омниканальные микросервисные решения') ";

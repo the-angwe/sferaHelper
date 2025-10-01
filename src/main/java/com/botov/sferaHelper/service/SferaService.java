@@ -1,17 +1,11 @@
 package com.botov.sferaHelper.service;
 
 import com.botov.sferaHelper.dto.*;
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.LongSerializationPolicy;
-import com.google.gson.internal.Excluder;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.*;
 
-import java.util.Collections;
 import java.util.List;
 
 public interface SferaService {
@@ -24,9 +18,6 @@ public interface SferaService {
                 .baseUrl("https://sfera.inno.local/")
                 .addConverterFactory(
                         GsonConverterFactory.create()
-/*                        GsonConverterFactory.create(
-                                new GsonBuilder().serializeNulls().create()
-                        )*/
                 )
                 .client(client)
                 .build();
