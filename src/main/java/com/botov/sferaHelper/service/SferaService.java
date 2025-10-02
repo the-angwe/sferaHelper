@@ -28,6 +28,9 @@ public interface SferaService {
     @GET("app/tasks/api/v0.1/entities")
     Call<ListTicketsDto> listTicketsByQuery(@Query("query") String query, @Query("size") int size, @Query("page") int page);
 
+    @GET("app/tasks/api/v1/sprints")
+    Call<ListSprintDto> listSprints(@Query("areaCodes") String areaCode, @Query("keyword") String keyword, @Query("size") int size, @Query("page") int page);
+
     @PATCH("app/tasks/api/v0.1/entities/{number}")
     Call<Void> patchTicket(@Path("number") String number, @Body PatchTicketDto estimation);
 

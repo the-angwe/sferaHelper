@@ -1,12 +1,12 @@
 package com.botov.sferaHelper;
 
-import com.botov.sferaHelper.dto.GetTicketDto;
-import com.botov.sferaHelper.dto.ListTicketShortDto;
-import com.botov.sferaHelper.dto.ListTicketsDto;
+import com.botov.sferaHelper.dto.*;
 import com.botov.sferaHelper.service.SferaHelperMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,27 +17,27 @@ public class SferaMonitoring {
     public static final String SFERA_TICKET_START_PATH = "https://sfera.inno.local/tasks/task/";
 
     public static void main(String... args) throws IOException {
-        checkProdBugs();
-        checkClosedTicketsWithoutResolution();
-        checkTicketsWithoutEpics();
-        checkTicketsWithoutEstimation();
-        checkTicketsWithoutSprint();
-        checkEpicsWithWrongSystems();
-        checkTicketsWithWrongSystems();
-        checkTicketsWithWrongProject();
-        checkTicketsWithBigEstimation();
-        checkOverdueRDSs();
-        checkNotOnBotovRDSs();
-        checkOnBotovNotMySystemRDSs();
-        checkYellowDeadlineRDSs();
-        checkRedDeadlineRDSs();
-        checkRDSsStatus();
-        checkOverdueFRNRSAs();
-        checkRDSWithOpenQuestions();
-        checkStoriesWithoutAcceptanceCriteria();
-        checkEpicsWithoutEstimation();
-        checkEpicsWithoutAcceptanceCriteria();
-        checkEpicsWithoutOpenedChildren();
+//        checkProdBugs();
+//        checkClosedTicketsWithoutResolution();
+//        checkTicketsWithoutEpics();
+//        checkTicketsWithoutEstimation();
+//        checkTicketsWithoutSprint();
+//        checkEpicsWithWrongSystems();
+//        checkTicketsWithWrongSystems();
+//        checkTicketsWithWrongProject();
+//        checkTicketsWithBigEstimation();
+//        checkOverdueRDSs();
+//        checkNotOnBotovRDSs();
+//        checkOnBotovNotMySystemRDSs();
+//        checkYellowDeadlineRDSs();
+//        checkRedDeadlineRDSs();
+//        checkRDSsStatus();
+//        checkOverdueFRNRSAs();
+//        checkRDSWithOpenQuestions();
+//        checkStoriesWithoutAcceptanceCriteria();
+//        checkEpicsWithoutEstimation();
+//        checkEpicsWithoutAcceptanceCriteria();
+//        checkEpicsWithoutOpenedChildren();
         //новые эпики на мне??
 
         //найти эпики без фичей
@@ -50,7 +50,38 @@ public class SferaMonitoring {
         //найти фичи без суперспринта и срока
 
         //выполненные задачи, но не закрытые
+//        testListTickets();
+        testListSprints();
+    }
 
+    private static void testListSprints() throws IOException {
+        ListSprintDto listSprintDto = SferaHelperMethods.listSprints("DVPS", "2025.4");
+
+        System.err.println();
+        System.err.println("Test (кол-во " + listSprintDto.getContent().size() + "):");
+        OffsetDateTime now = OffsetDateTime.now();
+        for (SprintDto sprint: listSprintDto.getContent()) {
+            OffsetDateTime begin, end;
+            begin = OffsetDateTime.parse(sprint.getStartDate());
+            end = OffsetDateTime.parse(sprint.getEndDate());
+            if ("sprint".equals(sprint.getType()) && begin.isBefore(now) && end.isAfter(now)) {
+                System.err.println(sprint.getName());
+            }
+        }
+    }
+
+    private static void testListTickets() throws IOException {
+        //Закрытые задачи без резолюции
+        String query = "area=\"DVPS\" and status not in ('closed')";
+//        String query = "area=\"DVPS\" and status in ('closed') and resolution = null";
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+
+        System.err.println();
+        System.err.println("Test (кол-во " + listTicketsDto.getContent().size() + "):");
+        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+            System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
+//            SferaHelperMethods.setResolution(ticket.getNumber(), "Готово");
+        }
     }
 
     private static void checkClosedTicketsWithoutResolution() throws IOException {

@@ -26,6 +26,21 @@ public class SferaHelperMethods {
         return body;
     }
 
+    public static ListSprintDto listSprints(String areaCode, String keyword) throws IOException {
+        int page = 0;
+        ListSprintDto body = new ListSprintDto();
+        body.setContent(new ArrayList<>());
+        Response<ListSprintDto> response;
+        do {
+            response = SferaService.INSTANCE.listSprints(areaCode, keyword, 1000, page++).execute();
+            System.out.println("response=" + response);
+            System.out.println("body=" + body);
+            body.getContent().addAll(response.body().getContent());
+            body.setTotalElements(response.body().getTotalElements());
+        } while (response.body().getTotalElements().intValue() > body.getContent().size());
+        return body;
+    }
+
     public static GetTicketDto ticketByNumber(String number) throws IOException {
         var response = SferaService.INSTANCE.getTicket(number).execute();
         System.out.println("response=" + response);
