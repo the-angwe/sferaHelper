@@ -46,9 +46,9 @@ public class UnsafeOkHttpClient {
                     .addInterceptor(
                             new AuthInterceptor()
                     )
-                    .addInterceptor(
-                            new LoggingInterceptor()
-                    )
+//                    .addInterceptor(
+//                            new LoggingInterceptor()
+//                    )
                     .build();
 
             return okHttpClient;

@@ -5,6 +5,8 @@ import com.botov.sferaHelper.dto.*;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +20,8 @@ public class SferaHelperMethods {
         Response<ListTicketsDto> response;
         do {
             response = SferaService.INSTANCE.listTicketsByQuery(query, 1000, page++).execute();
-            System.out.println("response=" + response);
-            System.out.println("body=" + body);
+//            System.out.println("response=" + response);
+//            System.out.println("body=" + body);
             body.getContent().addAll(response.body().getContent());
             body.setTotalElements(response.body().getTotalElements());
         } while (response.body().getTotalElements().intValue() > body.getContent().size());
@@ -33,8 +35,8 @@ public class SferaHelperMethods {
         Response<ListSprintDto> response;
         do {
             response = SferaService.INSTANCE.listSprints(areaCode, keyword, 1000, page++).execute();
-            System.out.println("response=" + response);
-            System.out.println("body=" + body);
+//            System.out.println("response=" + response);
+//            System.out.println("body=" + body);
             body.getContent().addAll(response.body().getContent());
             body.setTotalElements(response.body().getTotalElements());
         } while (response.body().getTotalElements().intValue() > body.getContent().size());
@@ -43,8 +45,8 @@ public class SferaHelperMethods {
 
     public static GetTicketDto ticketByNumber(String number) throws IOException {
         var response = SferaService.INSTANCE.getTicket(number).execute();
-        System.out.println("response=" + response);
-        System.out.println("response.body()=" + response.body());
+//        System.out.println("response=" + response);
+//        System.out.println("response.body()=" + response.body());
         return response.body();
     }
 
@@ -130,5 +132,37 @@ public class SferaHelperMethods {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setResolution(resolution);
         patchTicket2(number, ticketDto);
+    }
+
+    public static SprintDto getCurrentSprint(String area) throws IOException {
+        OffsetDateTime now = OffsetDateTime.now();
+        ListSprintDto sprints = listSprints(area, now.format(DateTimeFormatter.ofPattern("yyyy")));
+
+        for (SprintDto sprint: sprints.getContent()) {
+            OffsetDateTime begin, end;
+            begin = OffsetDateTime.parse(sprint.getStartDate());
+            end = OffsetDateTime.parse(sprint.getEndDate());
+            if ("sprint".equals(sprint.getType()) && begin.isBefore(now) && end.isAfter(now)) {
+//                System.err.println(sprint.getName());
+                return sprint;
+            }
+        }
+        throw new RuntimeException("Current sprint not found");
+    }
+
+    public static SprintDto getNextSprint(String area) throws IOException {
+        OffsetDateTime now = OffsetDateTime.now().plusDays(2);
+        ListSprintDto sprints = listSprints(area, now.format(DateTimeFormatter.ofPattern("yyyy")));
+
+        for (SprintDto sprint: sprints.getContent()) {
+            OffsetDateTime begin, end;
+            begin = OffsetDateTime.parse(sprint.getStartDate());
+            end = OffsetDateTime.parse(sprint.getEndDate());
+            if ("sprint".equals(sprint.getType()) && begin.isBefore(now) && end.isAfter(now)) {
+//                System.err.println(sprint.getName());
+                return sprint;
+            }
+        }
+        throw new RuntimeException("Next sprint not found");
     }
 }

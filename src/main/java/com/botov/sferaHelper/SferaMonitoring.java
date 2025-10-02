@@ -18,9 +18,9 @@ public class SferaMonitoring {
 
     public static void main(String... args) throws IOException {
 //        checkProdBugs();
-//        checkClosedTicketsWithoutResolution();
-//        checkTicketsWithoutEpics();
-//        checkTicketsWithoutEstimation();
+        checkClosedTicketsWithoutResolution();
+        checkTicketsWithoutEpics();
+        checkTicketsWithoutEstimation();
 //        checkTicketsWithoutSprint();
 //        checkEpicsWithWrongSystems();
 //        checkTicketsWithWrongSystems();
@@ -51,7 +51,7 @@ public class SferaMonitoring {
 
         //выполненные задачи, но не закрытые
 //        testListTickets();
-        testListSprints();
+//        testListSprints();
     }
 
     private static void testListSprints() throws IOException {
@@ -86,7 +86,7 @@ public class SferaMonitoring {
 
     private static void checkClosedTicketsWithoutResolution() throws IOException {
         //Закрытые задачи без резолюции
-        String query = "area=\"FRNRSA\" and status in ('closed') and resolution = null";
+        String query = "area=\"DVPS\" and status in ('closed') and resolution = null";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         System.err.println();
@@ -351,7 +351,7 @@ public class SferaMonitoring {
 
     private static void checkTicketsWithoutEpics() throws IOException {
         //задачи без эпиков
-        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and parent = null";
+        String query = "area=\"DVPS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and parent = null";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         System.err.println();
@@ -363,13 +363,13 @@ public class SferaMonitoring {
 
     private static void checkTicketsWithoutEstimation() throws IOException {
         //задачи без оценок
-        String query = "area=\"FRNRSA\" and status not in ('closed', 'done', 'rejectedByThePerformer') and estimation = null";
+        String query = "area=\"DVPS\" and status not in ('closed', 'done', 'rejectedByThePerformer') and estimation = null";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         System.err.println();
         System.err.println("задачи без оценок (кол-во " + listTicketsDto.getContent().size() + "):");
         for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
-            SferaHelperMethods.setEstimation(ticket.getNumber(), 3600L);
+            SferaHelperMethods.setEstimation(ticket.getNumber(), 3600 * 8);
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
