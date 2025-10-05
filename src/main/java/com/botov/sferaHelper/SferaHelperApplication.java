@@ -1,6 +1,6 @@
 package com.botov.sferaHelper;
 
-import com.botov.sferaHelper.dto.ListTicketShortDto;
+import com.botov.sferaHelper.dto.TicketDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.service.SferaHelperMethods;
 
@@ -26,7 +26,7 @@ class SferaHelperApplication {
 
 			ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
-			for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+			for (TicketDto ticket: listTicketsDto.getContent()) {
 				//SferaHelperMethods.setSystem(ticket.getNumber(), "1672_3 Аутентификация подтверждение операций");
 				SferaHelperMethods.setParent(ticket.getNumber(), "STROMS-5082");
 				//SferaHelperMethods.setEstimation(ticket.getNumber(), 3600L);

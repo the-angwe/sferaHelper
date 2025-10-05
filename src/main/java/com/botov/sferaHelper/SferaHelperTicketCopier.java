@@ -1,7 +1,6 @@
 package com.botov.sferaHelper;
 
 import com.botov.sferaHelper.dto.GetTicketDto;
-import com.botov.sferaHelper.dto.ListTicketShortDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.TicketCopyResponseDto;
 import com.botov.sferaHelper.service.SferaHelperMethods;

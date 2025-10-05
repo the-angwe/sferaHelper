@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-public class ListTicketShortDto {
+public class TicketDto {
     private Long id;
     private String name;
     private String number;//like FRNRSA-5000

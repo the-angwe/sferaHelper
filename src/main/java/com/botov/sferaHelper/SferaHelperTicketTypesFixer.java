@@ -2,7 +2,7 @@ package com.botov.sferaHelper;
 
 import com.botov.sferaHelper.bo.TicketType;
 import com.botov.sferaHelper.dto.GetTicketDto;
-import com.botov.sferaHelper.dto.ListTicketShortDto;
+import com.botov.sferaHelper.dto.TicketDto;
 import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.service.SferaHelperMethods;
 
@@ -40,8 +40,8 @@ public class SferaHelperTicketTypesFixer {
             fullTicketsMap.put(ticketType, new ArrayList<>());
         }
 
-        for (ListTicketShortDto listTicketShortDto: listTicketsDto.getContent()) {
-            GetTicketDto ticket = SferaHelperMethods.ticketByNumber(listTicketShortDto.getNumber());
+        for (TicketDto ticketDto : listTicketsDto.getContent()) {
+            GetTicketDto ticket = SferaHelperMethods.ticketByNumber(ticketDto.getNumber());
 
             ensureEstimation(ticket);
             TicketType ticketType = TicketType.getTicketType(ticket);

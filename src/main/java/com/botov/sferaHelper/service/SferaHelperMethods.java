@@ -150,6 +150,22 @@ public class SferaHelperMethods {
         throw new RuntimeException("Current sprint not found");
     }
 
+    public static SprintDto getCurrentSupersprint(String area) throws IOException {
+        OffsetDateTime now = OffsetDateTime.now();
+        ListSprintDto sprints = listSprints(area, now.format(DateTimeFormatter.ofPattern("yyyy")));
+
+        for (SprintDto sprint: sprints.getContent()) {
+            OffsetDateTime begin, end;
+            begin = OffsetDateTime.parse(sprint.getStartDate());
+            end = OffsetDateTime.parse(sprint.getEndDate());
+            if ("supersprint".equals(sprint.getType()) && begin.isBefore(now) && end.isAfter(now)) {
+//                System.err.println(sprint.getName());
+                return sprint;
+            }
+        }
+        throw new RuntimeException("Current supersprint not found");
+    }
+
     public static SprintDto getNextSprint(String area) throws IOException {
         OffsetDateTime now = OffsetDateTime.now().plusDays(2);
         ListSprintDto sprints = listSprints(area, now.format(DateTimeFormatter.ofPattern("yyyy")));

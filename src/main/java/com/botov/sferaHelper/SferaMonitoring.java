@@ -5,7 +5,6 @@ import com.botov.sferaHelper.service.SferaHelperMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("Test (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
 //            SferaHelperMethods.setResolution(ticket.getNumber(), "Готово");
         }
@@ -91,7 +90,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("Закрытые задачи без резолюции (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
             SferaHelperMethods.setResolution(ticket.getNumber(), "Готово");
         }
@@ -103,8 +102,8 @@ public class SferaMonitoring {
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
 
-        List<ListTicketShortDto> notMySystemRDSs = new ArrayList<>();
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        List<TicketDto> notMySystemRDSs = new ArrayList<>();
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             if (!ticket.getName().startsWith("[1672_3]") &&
                     !ticket.getName().startsWith("[1553]") &&
                     !ticket.getName().startsWith("[1553_1]") &&
@@ -115,7 +114,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("РДСы не по 1553_1, 1553 или 1672_3 на Ботове (кол-во " + notMySystemRDSs.size() + "):");
-        for (ListTicketShortDto ticket: notMySystemRDSs) {
+        for (TicketDto ticket: notMySystemRDSs) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
         }
     }
@@ -127,15 +126,15 @@ public class SferaMonitoring {
                 "and (streamExecutor = 'Омниканальный мидл' or streamExecutor = 'Базовые сервисы' or streamExecutor='Омниканальные микросервисные решения' or streamConsumer = 'Омниканальный мидл' or streamConsumer = 'Базовые сервисы' or streamConsumer='Омниканальные микросервисные решения')";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
-        List<ListTicketShortDto> notMyRDSs = new ArrayList<>();
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        List<TicketDto> notMyRDSs = new ArrayList<>();
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             if (!ticket.getNumber().equals("RDS-313296")) {//консультация по постпроцессорной очереди
                 notMyRDSs.add(ticket);
             }
         }
         System.err.println();
         System.err.println("РДСы по 1553_1, 1553 или 1672_3 не на Ботове (кол-во " + notMyRDSs.size() + "):");
-        for (ListTicketShortDto ticket: notMyRDSs) {
+        for (TicketDto ticket: notMyRDSs) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
         }
     }
@@ -149,7 +148,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("\"Пожелтевшие RDS\" (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
@@ -163,7 +162,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("\"Покрасневшие RDS\" (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
@@ -176,7 +175,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("эпики без декопозиции (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
@@ -189,7 +188,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("эпики без критериев приёмки (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
@@ -202,7 +201,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("эпики без оценок (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
@@ -215,7 +214,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("истории без критериев приёмки (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
@@ -227,7 +226,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("RDS с открытыми вопросами (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
@@ -239,7 +238,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("RDS не в статусe \"В очереди\" (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
             SferaHelperMethods.setStatus(ticket.getNumber(), "onTheQueue");
         }
@@ -269,7 +268,7 @@ public class SferaMonitoring {
         System.err.println();
         System.err.println("просроченные " + area + " (кол-во " + listTicketsDto.getContent().size() + "):");
         String newDueDate = LocalDate.now().plusDays(60).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
             SferaHelperMethods.setDueDate(ticket.getNumber(), newDueDate);
         }
@@ -282,7 +281,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("задачи с трудооценкой, большей чем 4 ч.д. (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
             SferaHelperMethods.setEstimation(ticket.getNumber(), 3600L * 8 * 4);
         }
@@ -295,7 +294,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("задачи с неправильным проектом (не 2973) (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             //SferaHelperMethods.setProject(ticket.getNumber(), "f9696ccf-0f8d-431e-a803-9d00ee6e3329");// проект 2973
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
@@ -308,7 +307,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("Эпики не по 1553 (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             SferaHelperMethods.setSystem(ticket.getNumber(), "1553 Заявки ФЛ");
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
@@ -321,7 +320,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("Задачи не по 1553 (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             SferaHelperMethods.setSystem(ticket.getNumber(), "1553 Заявки ФЛ");
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
@@ -335,8 +334,8 @@ public class SferaMonitoring {
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         List<GetTicketDto> prodDefects = new ArrayList<>();
-        for (ListTicketShortDto listTicketShortDto: listTicketsDto.getContent()) {
-            GetTicketDto ticket = SferaHelperMethods.ticketByNumber(listTicketShortDto.getNumber());
+        for (TicketDto ticketDto : listTicketsDto.getContent()) {
+            GetTicketDto ticket = SferaHelperMethods.ticketByNumber(ticketDto.getNumber());
             if (ticket.isProdDefect()) {
                 prodDefects.add(ticket);
             }
@@ -356,7 +355,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("задачи без эпиков (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
@@ -368,7 +367,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("задачи без оценок (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             SferaHelperMethods.setEstimation(ticket.getNumber(), 3600 * 8);
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
@@ -381,7 +380,7 @@ public class SferaMonitoring {
 
         System.err.println();
         System.err.println("задачи вне спринтов (кол-во " + listTicketsDto.getContent().size() + "):");
-        for (ListTicketShortDto ticket: listTicketsDto.getContent()) {
+        for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
         }
     }
