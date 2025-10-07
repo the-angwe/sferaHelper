@@ -8,11 +8,13 @@ import com.botov.sferaHelper.service.SferaHelperMethods;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class SferaSprintCloser {
 
     private static final String SFERA_TICKET_START_PATH = "https://sfera.inno.local/tasks/task/";
     private static final String AREA = "DVPS";
+    private static final List<String> TASK_STATUSES = List.of("created", "analysis", "onTheQueue", "inProgress", "done", "closed");
 
     public static void main(String... args) throws IOException {
         closeCurrentSprintTickets();
@@ -33,7 +35,9 @@ public class SferaSprintCloser {
         System.err.println("Незакрытые задачи текущего спринта (кол-во " + listTicketsDto.getContent().size() + "):");
         for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
-//            SferaHelperMethods.setStatus(ticket.getNumber(), "closed");
+            for (int i = TASK_STATUSES.indexOf(ticket.getStatus()) + 1; i < TASK_STATUSES.size(); i++) {
+                SferaHelperMethods.setStatus(ticket.getNumber(), TASK_STATUSES.get(i));
+            }
         }
     }
 
@@ -65,7 +69,7 @@ public class SferaSprintCloser {
         System.err.println("С due date внутри спринта, но без указания спринта (кол-во " + listTicketsDto.getContent().size() + "):");
         for (TicketDto ticket: listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
-//            SferaHelperMethods.setDueDate(ticket.getNumber(), OffsetDateTime.parse(ticket.getDueDate()).plusYears(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            SferaHelperMethods.setDueDate(ticket.getNumber(), OffsetDateTime.parse(ticket.getDueDate()).plusYears(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         }
     }
 

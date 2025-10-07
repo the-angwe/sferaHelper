@@ -86,7 +86,9 @@ public class SferaHelperMethods {
 
     private static void patchTicket2(String number, PatchTicketDto ticketDto) throws IOException {
         System.out.println("patch2 " + number + " with " + ticketDto);
-        SferaService.INSTANCE.patchTicket2(number, ticketDto).execute();
+        Response<Void> resp = SferaService.INSTANCE.patchTicket2(number, ticketDto).execute();
+        if (!resp.isSuccessful())
+            throw new RuntimeException(resp.code() + resp.errorBody().string());
     }
 
     public static void setProject(String number, String project) throws IOException {
