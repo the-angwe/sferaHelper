@@ -10,22 +10,18 @@ import java.nio.file.Paths;
 
 class AuthInterceptor implements Interceptor {
 
-    private String cookie = readCookie();
+    private final String token;
 
-    private String readCookie() {
-        try {
-            return cookie = new String(Files.readString(Paths.get("cookie.txt")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public AuthInterceptor(String token) {
+        this.token = token;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request  = chain.request();
-        Request authenticatedRequest = request.newBuilder().addHeader(
-                "Cookie",
-                cookie).build();
+        Request authenticatedRequest = request.newBuilder()
+                .header("Authorization", "Bearer " + token)
+                .build();
          return chain.proceed(authenticatedRequest);
     }
 }

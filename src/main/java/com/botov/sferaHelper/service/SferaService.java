@@ -10,21 +10,6 @@ import java.util.List;
 
 public interface SferaService {
 
-    SferaService INSTANCE = createSferaService();
-
-    private static SferaService createSferaService() {
-        var client = UnsafeOkHttpClient.getUnsafeOkHttpClient();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://sfera.inno.local/")
-                .addConverterFactory(
-                        GsonConverterFactory.create()
-                )
-                .client(client)
-                .build();
-
-        return retrofit.create(SferaService.class);
-    }
-
     @GET("app/tasks/api/v0.1/entities")
     Call<ListTicketsDto> listTicketsByQuery(@Query("query") String query, @Query("size") int size, @Query("page") int page);
 

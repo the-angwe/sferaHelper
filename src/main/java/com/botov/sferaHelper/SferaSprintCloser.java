@@ -4,22 +4,30 @@ import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.SprintDto;
 import com.botov.sferaHelper.dto.TicketDto;
 import com.botov.sferaHelper.service.SferaHelperMethods;
+import com.botov.sferaHelper.service.SferaService;
+import com.botov.sferaHelper.service.SferaServiceImpl;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Scanner;
 
 public class SferaSprintCloser {
 
     private static final String SFERA_TICKET_START_PATH = "https://sfera.inno.local/tasks/task/";
     private static final String AREA = "DVPS";
     private static final List<String> TASK_STATUSES = List.of("created", "analysis", "onTheQueue", "inProgress", "done", "closed");
+    private static final String username = "vtb70165782@corp.dev.vtb";
 
     public static void main(String... args) throws IOException {
-        closeCurrentSprintTickets();
-        fixClosedTicketsWithoutResolution();
-        fixTicketsDueWithoutSprint();
+        System.out.print("password: ");
+        String token = SferaHelperMethods.sferaLogin(username, new Scanner(System.in).nextLine()).getAccess_token();
+        SferaServiceImpl.INSTANCE = SferaServiceImpl.createSferaService(token);
+
+//        closeCurrentSprintTickets();
+//        fixClosedTicketsWithoutResolution();
+//        fixTicketsDueWithoutSprint();
 
         checkTicketsWithoutEpics();
         checkTicketsWithoutEstimation();

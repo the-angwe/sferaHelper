@@ -2,13 +2,12 @@ package com.botov.sferaHelper.service;
 
 import okhttp3.OkHttpClient;
 
-import javax.net.SocketFactory;
 import javax.net.ssl.*;
 import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
 public class UnsafeOkHttpClient {
-    public static OkHttpClient getUnsafeOkHttpClient() {
+    private static OkHttpClient.Builder prepareHttpClientBuilder() {
         try {
             // Create a trust manager that does not validate certificate chains
             final TrustManager[] trustAllCerts = new TrustManager[] {
@@ -39,21 +38,43 @@ public class UnsafeOkHttpClient {
             builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0]);
             builder.hostnameVerifier((hostname, session) -> true);
 
-            OkHttpClient okHttpClient = builder
+            return builder;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static OkHttpClient getUnsafeOkHttpClient() {
+        try {
+            return prepareHttpClientBuilder()
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+//                    .addInterceptor(
+//                            new LoggingInterceptor()
+//                    )
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static OkHttpClient getAuthenticatedUnsafeOkHttpClient(String token) {
+        try {
+            return prepareHttpClientBuilder()
                     .connectTimeout(60, TimeUnit.SECONDS)
                     .readTimeout(60, TimeUnit.SECONDS)
                     .writeTimeout(60, TimeUnit.SECONDS)
                     .addInterceptor(
-                            new AuthInterceptor()
+                            new AuthInterceptor(token)
                     )
 //                    .addInterceptor(
 //                            new LoggingInterceptor()
 //                    )
                     .build();
-
-            return okHttpClient;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 }

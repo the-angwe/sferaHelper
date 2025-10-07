@@ -2,6 +2,7 @@ package com.botov.sferaHelper.service;
 
 import com.botov.sferaHelper.bo.TicketType;
 import com.botov.sferaHelper.dto.*;
+import retrofit2.HttpException;
 import retrofit2.Response;
 
 import java.io.IOException;
@@ -12,6 +13,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class SferaHelperMethods {
+    public static AuthTokenDto sferaLogin(String username, String password) throws IOException {
+        AuthRequestDto loginRequest = new AuthRequestDto();
+        loginRequest.setUsername(username);
+        loginRequest.setPassword(password);
+        Response<AuthTokenDto> resp = SferaLoginService.INSTANCE.login(loginRequest).execute();
+        if (!resp.isSuccessful())
+            throw new HttpException(resp);
+        return resp.body();
+    }
 
     public static ListTicketsDto listTicketsByQuery(String query) throws IOException {
         int page = 0;
@@ -19,7 +29,7 @@ public class SferaHelperMethods {
         body.setContent(new ArrayList<>());
         Response<ListTicketsDto> response;
         do {
-            response = SferaService.INSTANCE.listTicketsByQuery(query, 1000, page++).execute();
+            response = SferaServiceImpl.INSTANCE.listTicketsByQuery(query, 1000, page++).execute();
 //            System.out.println("response=" + response);
 //            System.out.println("body=" + body);
             body.getContent().addAll(response.body().getContent());
@@ -34,7 +44,7 @@ public class SferaHelperMethods {
         body.setContent(new ArrayList<>());
         Response<ListSprintDto> response;
         do {
-            response = SferaService.INSTANCE.listSprints(areaCode, keyword, 1000, page++).execute();
+            response = SferaServiceImpl.INSTANCE.listSprints(areaCode, keyword, 1000, page++).execute();
 //            System.out.println("response=" + response);
 //            System.out.println("body=" + body);
             body.getContent().addAll(response.body().getContent());
@@ -44,7 +54,7 @@ public class SferaHelperMethods {
     }
 
     public static GetTicketDto ticketByNumber(String number) throws IOException {
-        var response = SferaService.INSTANCE.getTicket(number).execute();
+        var response = SferaServiceImpl.INSTANCE.getTicket(number).execute();
 //        System.out.println("response=" + response);
 //        System.out.println("response.body()=" + response.body());
         return response.body();
@@ -76,7 +86,7 @@ public class SferaHelperMethods {
 
     public static void patchTicket(String number, PatchTicketDto ticketDto) throws IOException {
         System.out.println("patch " + number + " with " + ticketDto);
-        SferaService.INSTANCE.patchTicket(number, ticketDto).execute();
+        SferaServiceImpl.INSTANCE.patchTicket(number, ticketDto).execute();
     }
 
     public static void setTicketType(String number, TicketType ticketType) throws IOException {
@@ -86,9 +96,9 @@ public class SferaHelperMethods {
 
     private static void patchTicket2(String number, PatchTicketDto ticketDto) throws IOException {
         System.out.println("patch2 " + number + " with " + ticketDto);
-        Response<Void> resp = SferaService.INSTANCE.patchTicket2(number, ticketDto).execute();
+        Response<Void> resp = SferaServiceImpl.INSTANCE.patchTicket2(number, ticketDto).execute();
         if (!resp.isSuccessful())
-            throw new RuntimeException(resp.code() + resp.errorBody().string());
+            throw new HttpException(resp);
     }
 
     public static void setProject(String number, String project) throws IOException {
@@ -102,7 +112,7 @@ public class SferaHelperMethods {
             AttributesDto attribute = new AttributesDto();
             attribute.setNumber(number);
             attribute.setAttribute("sprint");
-            SferaService.INSTANCE.deleteAttributes(List.of(attribute)).execute();
+            SferaServiceImpl.INSTANCE.deleteAttributes(List.of(attribute)).execute();
         } else {
             PatchTicketDto ticketDto = new PatchTicketDto();
             PatchSprintDto patchSprintDto = new PatchSprintDto();
@@ -124,7 +134,7 @@ public class SferaHelperMethods {
         request.setEntity(ticket.getNumber());
         request.setOverride(new OverrideDto());
         request.getOverride().setName(ticket.getName());
-        var response = SferaService.INSTANCE.copyTicket(request).execute();
+        var response = SferaServiceImpl.INSTANCE.copyTicket(request).execute();
         System.out.println("response=" + response);
         System.out.println("response.body()=" + response.body());
         return response.body();
