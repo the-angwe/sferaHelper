@@ -6,8 +6,10 @@ import com.botov.sferaHelper.dto.TicketDto;
 import com.botov.sferaHelper.service.SferaHelperMethods;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class SferaSprintOpener {
 
@@ -40,7 +42,7 @@ public class SferaSprintOpener {
         System.err.println("С due date внутри спринта, но без указания спринта (кол-во " + listTicketsDto.getContent().size() + "):");
         for (TicketDto ticket : listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber() + " \"" + ticket.getName() + "\"");
-//            SferaHelperMethods.setDueDate(ticket.getNumber(), OffsetDateTime.parse(ticket.getDueDate()).plusYears(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            SferaHelperMethods.setDueDate(ticket.getNumber(), LocalDate.parse(ticket.getDueDate()).plusYears(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         }
     }
 
@@ -59,7 +61,7 @@ public class SferaSprintOpener {
         System.err.println("Неправильная due date (кол-во " + listTicketsDto.getContent().size() + "):");
         for (TicketDto ticket : listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
-//            SferaHelperMethods.setDueDate(ticket.getNumber(), end);
+            SferaHelperMethods.setDueDate(ticket.getNumber(), end);
         }
     }
 
@@ -74,7 +76,7 @@ public class SferaSprintOpener {
         System.err.println("контейнеры (кол-во " + listTicketsDto.getContent().size() + "):");
         for (TicketDto ticket : listTicketsDto.getContent()) {
             System.err.println(SFERA_TICKET_START_PATH + ticket.getNumber());
-//            SferaHelperMethods.setSprint(ticket.getNumber(), null);
+            SferaHelperMethods.setSprint(ticket.getNumber(), null);
         }
     }
 
@@ -96,7 +98,7 @@ public class SferaSprintOpener {
 
         String query = "area='" + STROMS +
                 "' and status not in ('closed') and assignee in ('vtb70165782@corp.dev.vtb', 'vtb4067230@corp.dev.vtb')" +
-                "and name ~ 'devops' and sprint = '" + currentSupersprint.getId() + "'";
+                " and name ~ 'devsecops' and sprint = '" + currentSupersprint.getId() + "' and type = 'epic'";
         ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
         assert listTicketsDto.getContent().size() == 1;
         TicketDto parent = listTicketsDto.getContent().get(0);
