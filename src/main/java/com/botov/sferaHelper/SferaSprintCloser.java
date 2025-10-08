@@ -4,14 +4,15 @@ import com.botov.sferaHelper.dto.ListTicketsDto;
 import com.botov.sferaHelper.dto.SprintDto;
 import com.botov.sferaHelper.dto.TicketDto;
 import com.botov.sferaHelper.service.SferaHelperMethods;
-import com.botov.sferaHelper.service.SferaService;
 import com.botov.sferaHelper.service.SferaServiceImpl;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Scanner;
 
 public class SferaSprintCloser {
 
@@ -21,8 +22,11 @@ public class SferaSprintCloser {
     private static final String username = "vtb70165782@corp.dev.vtb";
 
     public static void main(String... args) throws IOException {
-        System.out.print("password: ");
-        String token = SferaHelperMethods.sferaLogin(username, new Scanner(System.in).nextLine()).getAccess_token();
+        LineReader reader = LineReaderBuilder.builder()
+                .terminal(TerminalBuilder.builder().build())
+                .build();
+
+        String token = SferaHelperMethods.sferaLogin(username, reader.readLine("Password: ", '*')).getAccess_token();
         SferaServiceImpl.INSTANCE = SferaServiceImpl.createSferaService(token);
 
 //        closeCurrentSprintTickets();
