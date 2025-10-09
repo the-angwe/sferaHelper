@@ -28,9 +28,9 @@ public class SferaSprintCloser {
         String token = SferaHelperMethods.sferaLogin(username, Files.readAllLines(Paths.get("p.txt")).get(0)).getAccess_token();
         SferaServiceImpl.INSTANCE = SferaServiceImpl.createSferaService(token);
 
-//        closeCurrentSprintTickets();
-//        fixClosedTicketsWithoutResolution();
-//        fixTicketsDueWithoutSprint();
+        closeCurrentSprintTickets();
+        fixClosedTicketsWithoutResolution();
+        fixTicketsDueWithoutSprint();
 
         checkTicketsWithoutEpics();
         checkTicketsWithoutEstimation();
