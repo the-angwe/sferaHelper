@@ -5,11 +5,12 @@ import com.botov.sferaHelper.dto.SprintDto;
 import com.botov.sferaHelper.dto.TicketDto;
 import com.botov.sferaHelper.service.SferaHelperMethods;
 import com.botov.sferaHelper.service.SferaServiceImpl;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -22,11 +23,9 @@ public class SferaSprintCloser {
     private static final String username = "vtb70165782@corp.dev.vtb";
 
     public static void main(String... args) throws IOException {
-        LineReader reader = LineReaderBuilder.builder()
-                .terminal(TerminalBuilder.builder().build())
-                .build();
+        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
 
-        String token = SferaHelperMethods.sferaLogin(username, reader.readLine("Password: ", '*')).getAccess_token();
+        String token = SferaHelperMethods.sferaLogin(username, Files.readAllLines(Paths.get("p.txt")).get(0)).getAccess_token();
         SferaServiceImpl.INSTANCE = SferaServiceImpl.createSferaService(token);
 
 //        closeCurrentSprintTickets();
