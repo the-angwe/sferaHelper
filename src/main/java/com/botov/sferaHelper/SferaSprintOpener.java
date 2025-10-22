@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 public class SferaSprintOpener {
 
@@ -107,16 +106,11 @@ public class SferaSprintOpener {
         SprintDto currentSupersprint = SferaHelperMethods.getCurrentSupersprint(AREA);
         SprintDto sprint = SferaHelperMethods.getNextSprint(AREA);
 
-        String query = "area='" + STROMS +
-                "' and status not in ('closed') and assignee in ('vtb70165782@corp.dev.vtb', 'vtb4067230@corp.dev.vtb')" +
-                " and name ~ 'devsecops' and sprint = '" + currentSupersprint.getId() + "' and type = 'epic'";
-        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
-        assert listTicketsDto.getContent().size() == 1;
-        TicketDto parent = listTicketsDto.getContent().get(0);
+        TicketDto parent = SferaHelperMethods.getEpicOfSupersprint(currentSupersprint);
 
-        query = "area='" + AREA + "' and status not in ('closed') and parent != '" + parent.getNumber() +
+        String query = "area='" + AREA + "' and status not in ('closed') and parent != '" + parent.getNumber() +
                 "' and sprint = '" + sprint.getId() + "'";
-        listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
+        ListTicketsDto listTicketsDto = SferaHelperMethods.listTicketsByQuery(query);
 
         System.err.println();
         System.err.println("задачи с неправильной родительской (кол-во " + listTicketsDto.getContent().size() + "):");

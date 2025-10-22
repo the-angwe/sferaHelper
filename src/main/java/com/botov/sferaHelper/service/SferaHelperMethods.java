@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class SferaHelperMethods {
+    private static final String STROMS = "STROMS";
+
     public static AuthTokenDto sferaLogin(String username, String password) throws IOException {
         AuthRequestDto loginRequest = new AuthRequestDto();
         loginRequest.setUsername(username);
@@ -140,6 +142,18 @@ public class SferaHelperMethods {
         return response.body();
     }
 
+    public static TicketCopyResponseDto copyTicket2(TicketDto ticket, String newName) throws IOException {
+        System.out.println("copy " + ticket.getNumber());
+        TicketCopyRequestDto request = new TicketCopyRequestDto();
+        request.setEntity(ticket.getNumber());
+        request.setOverride(new OverrideDto());
+        request.getOverride().setName(newName);
+        var response = SferaServiceImpl.INSTANCE.copyTicket(request).execute();
+//        System.out.println("response=" + response);
+//        System.out.println("response.body()=" + response.body());
+        return response.body();
+    }
+
     public static void setResolution(String number, String resolution) throws IOException {
         PatchTicketDto ticketDto = new PatchTicketDto();
         ticketDto.setResolution(resolution);
@@ -178,6 +192,73 @@ public class SferaHelperMethods {
         throw new RuntimeException("Current supersprint not found");
     }
 
+    public static SprintDto getNextSupersprint(String area) throws IOException {
+        SprintDto current = SferaHelperMethods.getCurrentSupersprint(area);
+        OffsetDateTime now = OffsetDateTime.parse(current.getEndDate()).plusMonths(2);
+        ListSprintDto sprints = listSprints(area, now.format(DateTimeFormatter.ofPattern("yyyy")));
+
+        for (SprintDto sprint: sprints.getContent()) {
+            OffsetDateTime begin, end;
+            begin = OffsetDateTime.parse(sprint.getStartDate());
+            end = OffsetDateTime.parse(sprint.getEndDate());
+            if ("supersprint".equals(sprint.getType()) && begin.isBefore(now) && end.isAfter(now)) {
+//                System.err.println(sprint.getName());
+                return sprint;
+            }
+        }
+        throw new RuntimeException("Next supersprint not found");
+    }
+
+    public static List<SprintDto> getSprintsOfSupersprint(String area, SprintDto supersprint) throws IOException {
+        OffsetDateTime now = OffsetDateTime.parse(supersprint.getStartDate()).plusMonths(1);
+        OffsetDateTime ssBegin = OffsetDateTime.parse(supersprint.getStartDate());
+        OffsetDateTime ssEnd = OffsetDateTime.parse(supersprint.getEndDate());
+        ListSprintDto sprints = listSprints(area, now.format(DateTimeFormatter.ofPattern("yyyy")));
+
+        List<SprintDto> result = new ArrayList<>();
+        for (SprintDto sprint: sprints.getContent()) {
+            OffsetDateTime begin, end;
+            begin = OffsetDateTime.parse(sprint.getStartDate());
+            end = OffsetDateTime.parse(sprint.getEndDate());
+            if ("sprint".equals(sprint.getType()) && (begin.isAfter(ssBegin) || begin.isEqual(ssBegin)) && (end.isBefore(ssEnd) || end.isEqual(ssEnd))) {
+//                System.err.println(sprint.getName());
+                result.add(sprint);
+            }
+        }
+        result.sort((o1, o2) -> {
+            OffsetDateTime begin1 = OffsetDateTime.parse(o1.getStartDate());
+            OffsetDateTime begin2 = OffsetDateTime.parse(o2.getStartDate());
+            return begin1.compareTo(begin2);
+        });
+        if (result.size() != 6)
+            throw new RuntimeException("Sprints not found");
+        else
+            return result;
+    }
+
+    public static List<SprintDto> getSupersprintsOfNextYear(String area) throws IOException {
+        SprintDto supersprint = getCurrentSupersprint(area);
+        OffsetDateTime now = OffsetDateTime.parse(supersprint.getStartDate()).plusYears(1);
+        ListSprintDto sprints = listSprints(area, now.format(DateTimeFormatter.ofPattern("yyyy")));
+
+        List<SprintDto> result = new ArrayList<>();
+        for (SprintDto sprint: sprints.getContent()) {
+            if ("supersprint".equals(sprint.getType())) {
+//                System.err.println(sprint.getName());
+                result.add(sprint);
+            }
+        }
+        result.sort((o1, o2) -> {
+            OffsetDateTime begin1 = OffsetDateTime.parse(o1.getStartDate());
+            OffsetDateTime begin2 = OffsetDateTime.parse(o2.getStartDate());
+            return begin1.compareTo(begin2);
+        });
+        if (result.size() != 4)
+            throw new RuntimeException("Supersprints not found");
+        else
+            return result;
+    }
+
     public static SprintDto getNextSprint(String area) throws IOException {
         OffsetDateTime now = OffsetDateTime.now().plusDays(2);
         ListSprintDto sprints = listSprints(area, now.format(DateTimeFormatter.ofPattern("yyyy")));
@@ -192,5 +273,13 @@ public class SferaHelperMethods {
             }
         }
         throw new RuntimeException("Next sprint not found");
+    }
+
+    public static TicketDto getEpicOfSupersprint(SprintDto next) throws IOException {
+        String query = "area='" + STROMS +
+                "' and status not in ('closed') and assignee in ('vtb70165782@corp.dev.vtb', 'vtb4067230@corp.dev.vtb')" +
+                " and name ~ 'devsecops' and sprint = '" + next.getId() + "' and type = 'epic'";
+        ListTicketsDto listTicketsDto = listTicketsByQuery(query);
+        return listTicketsDto.getContent().get(0);
     }
 }
