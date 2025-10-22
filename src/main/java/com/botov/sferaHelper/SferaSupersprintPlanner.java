@@ -18,7 +18,6 @@ public class SferaSupersprintPlanner {
 
     private static final String SFERA_TICKET_START_PATH = "https://sfera.inno.local/tasks/task/";
     private static final String AREA = "DVPS";
-    private static final String STROMS = "STROMS";
     private static final String username = "vtb70165782@corp.dev.vtb";
 
     public static void main(String... args) throws IOException {
