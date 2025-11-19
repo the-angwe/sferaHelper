@@ -37,7 +37,7 @@ public class SferaYearPlanner {
 
         for (int i = 0; i < 4; i++) {
             String end = OffsetDateTime.parse(supersprints.get(i).getEndDate()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            TicketCopyResponseDto ticketCopy = SferaHelperMethods.copyTicket2(parent, String.format("[%s.%d] Обеспечение процессов DevSecOps", end.substring(0, 3), i + 1));
+            TicketCopyResponseDto ticketCopy = SferaHelperMethods.copyTicket2(parent, String.format("[%s.%d] Обеспечение процессов DevSecOps", end.substring(0, 4), i + 1));
 
             SferaHelperMethods.setSprint(ticketCopy.getNumber(), supersprints.get(i).getId().toString());
             SferaHelperMethods.setDueDate(ticketCopy.getNumber(), end);
